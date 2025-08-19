@@ -18,6 +18,11 @@ commtrackr.init({ // Initialize CommTracker with configurations
     slug: 'commtrackr', // Unique identifier for the tenant
     name: 'CommTrackr', // Name of the tenant
     description: 'Easily plan, manage, and track client commissions.', // Description of the tenant
+    logo: 'http://localhost:3000/commtrackr/logo.png', // Tenant logo image
+    themeColor: '#ffffff', // Tenant theme color
+    banner: 'http://localhost:3000/commtrackr/banner_public.png', // Tenant banner image
+    domain: 'http://localhost:3000', // Domain for the tenant, including protocol
+    path: '/commtrackr', // Path that CommTracker is mounted on
     auth: {
       enabled: false, // Enable or disable authentication
       provider: '', // Recognizable name of authentication provider

@@ -1,0 +1,163 @@
+@font-face {
+	font-family: "Instrument Sans";
+	src: url("InstrumentSans.ttf") format("truetype");
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: inherit;
+	color: #ffffff;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: #161616;
+	color: #ffffff;
+	font-family: "Instrument Sans", sans-serif;
+	padding: 25px;
+}
+
+h1 {
+	font-size: min(40px, 10vw);
+	font-weight: 600;
+	line-height: 50px;
+	line-height: min(50px, 12.5vw);
+}
+
+p {
+	opacity: 0.75;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 24px;
+	letter-spacing: -0.09px;
+}
+
+code {
+	padding: 2.5px 5px;
+	background: #161616;
+	border-radius: 5px;
+	margin: 0 2.5px;
+}
+
+.buttons {
+	display: flex;
+	align-items: flex-start;
+	gap: 15px;
+	margin-top: 15px;
+}
+
+.button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	padding: 7.5px 22px;
+	border-radius: 5px;
+	border: 1px solid #242424;
+	background: transparent;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 24px;
+	letter-spacing: -0.09px;
+	text-decoration: none;
+	cursor: pointer;
+	transition: 0.25s;
+}
+
+.button:hover,
+.button:focus,
+.button.active {
+	background: #2c2c2c;
+	border-color: #393939;
+	text-decoration: none;
+}
+
+main {
+	display: flex;
+	padding: min(100px, 10vh) 0;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 10px;
+	width: -webkit-fill-available;
+	height: calc(100vh - 50px - (2 * (min(100px, 10vh))));
+	background: #111111;
+	border-radius: 15px;
+	overflow-y: scroll;
+	position: relative;
+	transition: 0.25s;
+
+	> .fixed {
+		position: absolute;
+		bottom: 25px;
+		left: 30px;
+	}
+
+	.inner {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+        align-self: center;
+		gap: 10px;
+        width: 80%;
+        max-width: 1000px;
+		height: 100%;
+		position: relative;
+		transition-timing-function: linear;
+
+		> img {
+			width: 50px;
+		}
+	}
+}
+
+@keyframes out {
+	0% {
+		margin-left: 0%;
+		opacity: 1;
+	}
+	100% {
+		margin-left: -50%;
+		opacity: 0;
+	}
+}
+
+@keyframes in {
+	0% {
+		margin-right: -50%;
+		opacity: 0;
+	}
+	100% {
+		margin-right: 0%;
+		opacity: 1;
+	}
+}
+
+main.out .inner {
+	animation: out 0.75s forwards;
+}
+
+main.in .inner {
+	animation: in 0.5s forwards;
+}
+
+@media screen and (max-width: 950px) {
+	.buttons,
+	.button {
+		width: -webkit-fill-available;
+	}
+
+	.buttons {
+		flex-direction: column;
+		gap: 10px;
+	}
+}

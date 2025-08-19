@@ -30,7 +30,12 @@ function init({
   tenant: newTenant = {
     slug: 'commtrackr',
     name: 'CommTrackr',
-    description: 'This is a default tenant configuration.',
+    description: 'Easily plan, manage, and track client commissions.',
+    logo: 'http://localhost:3000/logo.png',
+    banner: 'http://localhost:3000/banner_public.png',
+    themeColor: '#ffffff',
+    domain: 'http://localhost:3000',
+    path: '',
     auth: {
       enabled: false,
       provider: '',
@@ -42,7 +47,12 @@ function init({
   tenant = {
     slug: 'commtrackr',
     name: 'CommTrackr',
-    description: 'This is a default tenant configuration.',
+    description: 'Easily plan, manage, and track client commissions.',
+    logo: 'http://localhost:3000/logo.png',
+    banner: 'http://localhost:3000/banner_public.png',
+    themeColor: '#ffffff',
+    domain: 'http://localhost:3000',
+    path: '',
     auth: {
       enabled: false,
       provider: '',
@@ -64,9 +74,9 @@ function setUser(newUser = {}) {
 };
 
 app.get('/', async (req, res) => {
-  if (!on) return res.send('Service is not active');
-  if (!tenant.slug) return res.send('No tenant configured');
-  if (tenant.auth && tenant.auth.enabled && !user.id) return res.send('Authentication required');
+  if (!on) return res.render('off', { tenant, title: 'Activation - ' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
+  if (tenant.auth && tenant.auth.enabled && !user.id) return res.render('auth', { tenant, title: 'Authenticate - ' });
   res.send(tenant.slug);
 });
 
@@ -74,5 +84,6 @@ module.exports = {
   routes: app,
   init,
   activate,
+  on: activate,
   setUser
 };
