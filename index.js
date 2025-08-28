@@ -39,13 +39,25 @@ function init({
     auth: {
       enabled: false,
       provider: '',
-      url: '',
-    },
+      url: ''
+    }
   },
   vars: newVars = {
     userId: 'username',
+    userName: 'name',
     role: 'role',
-    commissions: 'commissions',
+    roleAliases: {
+      user: ['user', 'standard', 'basic'],
+      dev: ['dev', 'developer'],
+      admin: ['admin', 'administrator', 'superuser']
+    },
+    access: {
+      var: 'access',
+      user: [0],
+      dev: [2],
+      admin: [4, 5]
+    },
+    commissions: 'commissions'
   },
   handler: newHandler = null
 }) {
@@ -67,7 +79,10 @@ function init({
   };
   vars = {
     userId: 'username',
+    userName: 'name',
     role: 'role',
+    roleAliases: {},
+    access: {},
     commissions: 'commissions',
     ...newVars
   },
@@ -89,8 +104,8 @@ app.get('/', async (req, res) => {
   if (!on) return res.render('off', { tenant, title: 'Activation - ' });
   if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
-  if (tenant.auth && tenant.auth.enabled && !user.id) return res.render('auth', { tenant, title: 'Authenticate - ' });
-  res.send(tenant.slug);
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
+  res.send(`Hello ${req.session[vars.name] || req.session[vars.userId]}`);
 });
 
 module.exports = {
@@ -98,5 +113,5 @@ module.exports = {
   init,
   activate,
   on: activate,
-  setUser
+  // setUser
 };

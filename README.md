@@ -57,8 +57,19 @@ commtrackr.init({ // Initialize CommTracker with configurations
   },
   vars: {
     userId: 'username', // req.session object variable for unique user identification
-    userName: 'name', // req.session object variable for user name
+    userName: 'Name', // req.session object variable for user name
     role: 'role', // req.session object variable for user role
+    roleAliases: { // Use if your role names differ from 'admin', 'dev', or 'user'
+      user: ['user', 'standard', 'basic'], // Aliases for user roles
+      dev: ['dev', 'developer'], // Aliases for developer roles
+      admin: ['admin', 'administrator', 'superuser'] // Aliases for admin roles
+    },
+    access: { // Alternative access control using numeric levels
+      var: 'access', // req.session object variable for access level
+      user: [0], // Access levels for standard users
+      dev: [1], // Access levels for developers
+      admin: [2] // Access levels for admins
+    },
     commissions: 'commissions', // req.session object variable for user commissions array
   },
 });
@@ -78,9 +89,11 @@ These variables must be set in your `req.session` object to enable CommTrackr fu
 
 Type: `String`
 
+Default: `'username'`
+
 Fallback: None
 
-Example: `'username'`
+Session Example: `'id'`
 
 ### userName
 
@@ -88,9 +101,11 @@ Example: `'username'`
 
 Type: `String`
 
+Default: `'name'`
+
 Fallback: `req.session.userId`
 
-Example: `'John Doe'`
+Session Example: `'John Doe'`
 
 ### role
 
@@ -98,9 +113,35 @@ Example: `'John Doe'`
 
 Type: `String`
 
+Default: `'role'`
+
 Fallback: `user`
 
-Example: `'user'`, `'dev'`, `'admin'`
+Session Example: `'user'`, `'dev'`, `'admin'`
+
+### roleAliases
+
+`req.session.role` can also be set to custom role names. Use `roleAliases` to map your custom role names to the standard roles used by CommTrackr.
+
+Type: `Object`
+
+Default:
+
+```javascript
+{}
+```
+
+### access
+
+`req.session.access` can be used as an alternative to `role` for access control. It should contain numeric access levels. Use the `access` configuration to define which levels correspond to 'user', 'dev', and 'admin'.
+
+Type: `Array`
+
+Default:
+
+```javascript
+{}
+```
 
 ### commissions
 
@@ -108,7 +149,9 @@ Example: `'user'`, `'dev'`, `'admin'`
 
 Type: `Array`
 
-Example:
+Default: `'commissions'`
+
+Session Example:
 
 ```javascript
 [

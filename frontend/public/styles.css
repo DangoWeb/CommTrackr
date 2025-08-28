@@ -112,7 +112,7 @@ main {
         max-width: 1000px;
 		height: 100%;
 		position: relative;
-		transition-timing-function: linear;
+		transition-timing-function: ease-in-out;
 		opacity: 0;
 
 		> img {

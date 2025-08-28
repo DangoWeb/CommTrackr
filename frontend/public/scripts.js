@@ -16,7 +16,7 @@ function anim_out() {
     document.querySelector('main').classList.add('out');
 };
 
-anim_in();
+document.onload = anim_in();
 
 // anim_out();
 // setTimeout(() => {
