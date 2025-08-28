@@ -118,7 +118,17 @@ app.get('/', async (req, res) => {
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
   console.log('User ID:', req.session[vars.userId]);
   console.log('Role:', getUserRole(req.session));
-  res.send(`Hello ${req.session[vars.name] || req.session[vars.userId]}`);
+  switch (getUserRole(req.session)) {
+    case 'admin':
+      res.render('admin', { tenant, title: 'Admin - ' });
+      break;
+    case 'dev':
+      res.render('dev', { tenant, title: 'Developer - ' });
+      break;
+    default:
+      res.render('user', { tenant, title: 'User - ' });
+      break;
+  };
 });
 
 module.exports = {

@@ -1,0 +1,10 @@
+<%- include('head.ejs') %>
+<img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
+<h1>New Commission</h1>
+<p>Estimated time to complete: 2 minutes</p>
+<div class="buttons">
+	<div class="button hidden">Back</div>
+	<div class="button active hidden">Next</div>
+	<div class="button active" onclick="start();">Start</div>
+</div>
+<%- include('foot.ejs') %>

@@ -72,12 +72,21 @@ code {
 	transition: 0.25s;
 }
 
+.button.hidden {
+	display: none;
+}
+
 .button:hover,
 .button:focus,
-.button.active {
+.button.active:not(:hover):not(:focus) {
 	background: #2c2c2c;
 	border-color: #393939;
 	text-decoration: none;
+}
+
+.button.active:hover,
+.button.active:focus {
+	opacity: 0.5;
 }
 
 main {
