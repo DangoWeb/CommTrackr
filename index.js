@@ -46,17 +46,8 @@ function init({
     userId: 'username',
     userName: 'name',
     role: 'role',
-    roleAliases: {
-      user: ['user', 'standard', 'basic'],
-      dev: ['dev', 'developer'],
-      admin: ['admin', 'administrator', 'superuser']
-    },
-    access: {
-      var: 'access',
-      user: [0],
-      dev: [2],
-      admin: [4, 5]
-    },
+    roleAliases: {},
+    access: {},
     commissions: 'commissions'
   },
   handler: newHandler = null
@@ -86,12 +77,32 @@ function init({
     commissions: 'commissions',
     ...newVars
   },
-  returnHandler = newHandler;
+    returnHandler = newHandler;
 };
 
 function activate(isOn = true) {
   on = isOn;
   if (!on) user = {};
+};
+
+function getUserRole(session) {
+  if (!session) return null;
+  if (vars.access && Object.keys(vars.access).length && vars.access.var) {
+    const access = session[vars.access.var];
+    if (access === undefined || access === null) return null;
+    for (const [key, values] of Object.entries(vars.access)) {
+      if (key === 'var') continue;
+      if (values.includes(access)) return key;
+    };
+  } else {
+    const role = session[vars.role];
+    if (!role) return null;
+    const aliases = vars.roleAliases || {};
+    for (const [key, values] of Object.entries(aliases)) {
+      if (values.includes(role.toLowerCase())) return key;
+    };
+  };
+  return 'user';
 };
 
 // function setUser(newUser = {}) {
@@ -105,6 +116,8 @@ app.get('/', async (req, res) => {
   if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
+  console.log('User ID:', req.session[vars.userId]);
+  console.log('Role:', getUserRole(req.session));
   res.send(`Hello ${req.session[vars.name] || req.session[vars.userId]}`);
 });
 
