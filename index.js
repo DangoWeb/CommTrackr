@@ -23,8 +23,8 @@ app.use(rateLimit({
 
 let on = false;
 let tenant = {};
+let vars = {};
 let returnHandler = null;
-let user = {};
 
 function init({
   tenant: newTenant = {
@@ -41,6 +41,11 @@ function init({
       provider: '',
       url: '',
     },
+  },
+  vars: newVars = {
+    userId: 'username',
+    role: 'role',
+    commissions: 'commissions',
   },
   handler: newHandler = null
 }) {
@@ -60,6 +65,12 @@ function init({
     },
     ...newTenant
   };
+  vars = {
+    userId: 'username',
+    role: 'role',
+    commissions: 'commissions',
+    ...newVars
+  },
   returnHandler = newHandler;
 };
 
@@ -68,13 +79,15 @@ function activate(isOn = true) {
   if (!on) user = {};
 };
 
-function setUser(newUser = {}) {
-  if (!newUser.id) return user = {};
-  user = newUser;
-};
+// function setUser(newUser = {}) {
+//   if (!newUser.id) return user = {};
+//   user = newUser;
+// };
 
 app.get('/', async (req, res) => {
+  console.log('Session:', req.session);
   if (!on) return res.render('off', { tenant, title: 'Activation - ' });
+  if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
   if (tenant.auth && tenant.auth.enabled && !user.id) return res.render('auth', { tenant, title: 'Authenticate - ' });
   res.send(tenant.slug);
