@@ -88,6 +88,11 @@ commtrackr.init({ // Initialize CommTracker with configurations
       ],
     },
   ],
+  handler: (data) => {
+    // Custom handler function for processing commission data
+    // This function is called when a commission is created or updated
+    // You can implement your own logic here, such as saving to a database
+  }
 });
 
 app.listen(3000, () => {

@@ -289,6 +289,25 @@ main.in .inner {
 	animation: in 0.5s forwards;
 }
 
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	20%,
+	60% {
+		transform: translateX(-10px);
+	}
+	40%,
+	80% {
+		transform: translateX(10px);
+	}
+}
+
+.shake {
+	animation: shake 0.5s;
+}
+
 @media screen and (max-width: 950px) {
 	.buttons,
 	.button {

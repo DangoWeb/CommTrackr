@@ -56,6 +56,27 @@ function start() {
 };
 
 function next() {
+    if (step > 0) {
+        const currentField = document.querySelector(`.inputField[step="${step}"]`);
+        if (currentField && currentField.classList.contains('required')) {
+            const input = currentField.querySelector('input, textarea, select');
+            if (input) {
+                if (input.type === 'checkbox') {
+                    if (!input.checked) {
+                        input.focus();
+                        shake(currentField);
+                        return;
+                    };
+                } else {
+                    if (!input.value.trim()) {
+                        input.focus();
+                        shake(currentField);
+                        return;
+                    };
+                };
+            };
+        };
+    };
     if (step < document.querySelectorAll('.inputField').length) {
         document.querySelector(`.inputField[step="${step}"]`)?.classList.remove('active');
         step++;
@@ -144,11 +165,60 @@ document.addEventListener('keydown', function (event) {
     };
 });
 
-function create() {
-    localStorage.clear();
+async function create() {
+    anim_out();
+    var data = {};
+    document.querySelectorAll('.inputField').forEach(field => {
+        const input = field.querySelector('input, textarea, select');
+        if (input) {
+            if (input.type === 'checkbox') {
+                data[field.id] = input.checked;
+            } else {
+                data[field.id] = input.value;
+            };
+        };
+    });
+    await fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => response.json())
+        .then(result => {
+            document.getElementById('back').classList.add('hidden')
+            document.getElementById('create').classList.add('hidden');
+            if (result.status === 'success') {
+                document.querySelectorAll('.inputField').forEach(field => {
+                    field.classList.remove('active');
+                });;
+                document.getElementById('success').classList.remove('hidden');
+                localStorage.clear();
+                document.querySelector('.inner h1').innerText = 'Creation successful';
+                document.querySelector('.inner p').innerText = result.message || 'Your commission was created successfully.';
+            } else {
+                document.querySelectorAll('.inputField').forEach(field => {
+                    field.classList.remove('active');
+                });
+                document.getElementById('error').classList.remove('hidden');
+                document.querySelector('.inner h1').innerText = 'Error';
+                document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';
+            };
+            setTimeout(() => {
+                anim_in();
+            }, 750)
+        });
 };
 
 function progress(percent) {
     const progressBar = document.querySelector('.progress');
     progressBar.style.width = percent + '%';
+};
+
+function shake(element) {
+    element.classList.add('shake');
+    setTimeout(() => {
+        element.classList.remove('shake');
+    }, 500);
 };

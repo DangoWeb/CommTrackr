@@ -114,24 +114,56 @@ function getUserRole(session) {
 // };
 
 app.get('/', async (req, res) => {
-  console.log('Session:', req.session);
   if (!on) return res.render('off', { tenant, title: 'Activation - ' });
   if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
-  console.log('User ID:', req.session[vars.userId]);
-  console.log('Role:', getUserRole(req.session));
   switch (getUserRole(req.session)) {
     case 'admin':
-      res.render('admin', { tenant, title: 'Admin View - ' });
+      res.render('admin', { tenant, title: 'Admin View - ', session: req.session, vars });
       break;
     case 'dev':
-      res.render('dev', { tenant, title: 'Developer View - ' });
+      res.render('dev', { tenant, title: 'Developer View - ', session: req.session, vars });
       break;
     default:
-      res.render('user', { tenant, title: 'New Commission - ', fields });
+      res.render('user', { tenant, title: '', session: req.session, vars, fields });
       break;
   };
+});
+
+app.get('/create', async (req, res) => {
+  if (!on) return res.render('off', { tenant, title: 'Activation - ' });
+  if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
+  res.render('create', { tenant, title: 'New Commission - ', session: req.session, vars, fields });
+});
+
+app.post('/create', async (req, res) => {
+  if (!on) return res.status(503).json({ status: 'error', message: 'Service is currently offline.' });
+  if (!req.session) return res.status(401).json({ status: 'error', message: 'No session found. Please enable cookies and try again.' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: 'User not authenticated. Please log in and try again.' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
+  if (!fields || !fields.length) return res.status(500).json({ status: 'error', message: 'No fields configured for commission creation. Please contact the administrator.' });
+  const data = {};
+  fields.forEach(field => {
+    if (field.id) data[field.id] = req.body[field.id] || null;
+  });
+  data.createdAt = new Date();
+  data.createdBy = (tenant.auth && tenant.auth.enabled) ? {
+    id: req.session[vars.userId],
+    name: req.session[vars.name] || req.session[vars.userId],
+    role: getUserRole(req.session) || 'user'
+  } : {};
+  if (returnHandler && typeof returnHandler === 'function') {
+    // try {
+    //   await returnHandler(data);
+    // } catch (error) {
+      // console.error('Error in handler function:', error);
+      return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
+    // };
+  };
+  res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
 });
 
 module.exports = {
