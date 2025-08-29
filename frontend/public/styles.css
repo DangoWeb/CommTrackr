@@ -32,6 +32,10 @@ h1 {
 	line-height: min(50px, 12.5vw);
 }
 
+h3 {
+	font-weight: 400;
+}
+
 p {
 	opacity: 0.75;
 	font-size: 15px;
@@ -69,6 +73,7 @@ code {
 	letter-spacing: -0.09px;
 	text-decoration: none;
 	cursor: pointer;
+	user-select: none;
 	transition: 0.25s;
 }
 
@@ -87,6 +92,49 @@ code {
 .button.active:hover,
 .button.active:focus {
 	opacity: 0.5;
+}
+
+input,
+textarea {
+	border: none;
+	width: -webkit-fill-available;
+	max-width: 500px;
+	min-height: 45px;
+	background: transparent;
+	border-bottom: 1px solid #ffffff;
+	outline: none;
+}
+
+input.hidden,
+textarea.hidden {
+	display: none;
+}
+
+input {
+	font-size: 20px;
+}
+
+textarea {
+	font-size: 15px;
+}
+
+.checkbox {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	width: fit-content;
+	height: fit-content;
+	padding: 5px 10px;
+	border: 1px solid #ffffff;
+	border-radius: 3px;
+	cursor: pointer;
+	user-select: none;
+	transition: 0.25s;
+}
+
+.checkbox.checked {
+	background: #ffffff;
+	color: #161616;
 }
 
 main {
@@ -110,15 +158,28 @@ main {
 		left: 30px;
 	}
 
+	> .fixed2 {
+		position: absolute;
+		bottom: 25px;
+		right: 30px;
+		opacity: 0;
+		transition: 0.25s;
+	}
+
+	> .fixed2.visible {
+		opacity: 1;
+		transition: 0.25s;
+	}
+
 	.inner {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		justify-content: center;
-        align-self: center;
+		align-self: center;
 		gap: 10px;
-        width: 80%;
-        max-width: 1000px;
+		width: 80%;
+		max-width: 1000px;
 		height: 100%;
 		position: relative;
 		transition-timing-function: ease-in-out;
@@ -127,6 +188,24 @@ main {
 		> img {
 			width: 50px;
 		}
+	}
+
+	.inputField {
+		display: flex;
+		flex-direction: column;
+		gap: 7.5px;
+		width: -webkit-fill-available;
+		margin-top: 5px;
+		max-height: 200px;
+		transition: 0.25s;
+	}
+
+	.inputField:not(.active) {
+		margin-top: -10px;
+		max-height: 0px;
+		overflow: hidden;
+		opacity: 0;
+		transition: 0.25s;
 	}
 }
 

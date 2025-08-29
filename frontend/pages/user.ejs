@@ -2,9 +2,24 @@
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1>New Commission</h1>
 <p>Estimated time to complete: 2 minutes</p>
+<% var step = 1; fields.forEach(field => { %>
+<div class="inputField" id="<%= field.id %>" step="<%= step %>">
+	<h3><%= field.label %><%= field.required ? '*' : '' %></h3>
+	<p><%= field.required ? 'Required' : 'Optional' %><%= field.description ? ': ' + field.description : '' %></p>
+	<% if (field.type === 'textarea') { %>
+	<textarea placeholder="<%= field.placeholder || '' %>"></textarea>
+	<% } else if (field.type === 'checkbox') { %>
+	<input type="checkbox" class="hidden">
+	<div class="checkbox" change="cms">|||</div>
+	<% } else { %>
+	<input type="<%= field.type %>" placeholder="<%= field.placeholder || '' %>">
+	<% } %>
+</div>
+<% step++; }) %>
 <div class="buttons">
-	<div class="button hidden">Back</div>
-	<div class="button active hidden">Next</div>
-	<div class="button active" onclick="start();">Start</div>
+	<div id="back" class="button hidden" onclick="back();">Back</div>
+	<div id="next" class="button active hidden" onclick="next();">Next</div>
+	<div id="start" class="button active" onclick="start();">Start</div>
+	<div id="create" class="button active hidden" onclick="create();">Create</div>
 </div>
 <%- include('foot.ejs') %>

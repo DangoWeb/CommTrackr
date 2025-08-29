@@ -72,6 +72,16 @@ commtrackr.init({ // Initialize CommTracker with configurations
     },
     commissions: 'commissions', // req.session object variable for user commissions array
   },
+  fields: [
+    {
+      id: 'name', // Unique identifier for the field
+      type: 'text', // Field type (e.g., text, number, date, textarea, checkbox)
+      label: 'Website Name', // Field label
+      description: 'The name of the website or project.', // Field description
+      placeholder: 'e.g. My Website', // Placeholder text for the field
+      required: true // Whether the field is required
+    },
+  ],
 });
 
 app.listen(3000, () => {

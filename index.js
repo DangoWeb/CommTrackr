@@ -24,6 +24,7 @@ app.use(rateLimit({
 let on = false;
 let tenant = {};
 let vars = {};
+let fields = [];
 let returnHandler = null;
 
 function init({
@@ -50,6 +51,7 @@ function init({
     access: {},
     commissions: 'commissions'
   },
+  fields: newFields = [],
   handler: newHandler = null
 }) {
   tenant = {
@@ -76,8 +78,9 @@ function init({
     access: {},
     commissions: 'commissions',
     ...newVars
-  },
-    returnHandler = newHandler;
+  };
+  fields = newFields;
+  returnHandler = newHandler;
 };
 
 function activate(isOn = true) {
@@ -120,13 +123,13 @@ app.get('/', async (req, res) => {
   console.log('Role:', getUserRole(req.session));
   switch (getUserRole(req.session)) {
     case 'admin':
-      res.render('admin', { tenant, title: 'Admin - ' });
+      res.render('admin', { tenant, title: 'Admin View - ' });
       break;
     case 'dev':
-      res.render('dev', { tenant, title: 'Developer - ' });
+      res.render('dev', { tenant, title: 'Developer View - ' });
       break;
     default:
-      res.render('user', { tenant, title: 'User - ' });
+      res.render('user', { tenant, title: 'New Commission - ', fields });
       break;
   };
 });
