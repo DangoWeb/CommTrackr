@@ -210,6 +210,17 @@ main {
 		transition: 0.25s;
 	}
 
+	> .progress {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 5px;
+		width: 0%;
+		background: #ffffff;
+		border-radius: 15px;
+		transition: width 0.25s;
+	}
+
 	.inner {
 		display: flex;
 		flex-direction: column;

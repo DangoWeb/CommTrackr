@@ -60,6 +60,7 @@ function next() {
         document.querySelector(`.inputField[step="${step}"]`)?.classList.remove('active');
         step++;
         document.querySelector(`.inputField[step="${step}"]`)?.classList.add('active');
+        progress((step / document.querySelectorAll('.inputField').length) * 100);
     } else {
         document.getElementById('next')?.classList.add('hidden');
         document.getElementById('create')?.classList.remove('hidden');
@@ -80,6 +81,7 @@ function back() {
         document.querySelector(`.inputField[step="${step}"]`)?.classList.remove('active');
         step--;
         document.querySelector(`.inputField[step="${step}"]`)?.classList.add('active');
+        progress((step / document.querySelectorAll('.inputField').length) * 100);
     } else {
         document.getElementById('back')?.classList.add('hidden');
     };
@@ -146,6 +148,7 @@ function create() {
     localStorage.clear();
 };
 
-// progress bar
-// radio input
-// select input
+function progress(percent) {
+    const progressBar = document.querySelector('.progress');
+    progressBar.style.width = percent + '%';
+};
