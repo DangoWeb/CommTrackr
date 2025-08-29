@@ -11,6 +11,21 @@
 	<% } else if (field.type === 'checkbox') { %>
 	<input type="checkbox" class="hidden">
 	<div class="checkbox" change="cms">|||</div>
+	<% } else if (field.type === 'radio') { %>
+	<div class="radioOptions">
+		<% (field.options || []).forEach(option => { %>
+		<div class="radioOption">
+			<input type="radio" id="<%= option.value %>" name="<%= option.value %>" value="<%= option.label %>">
+			<label for="<%= option.value %>"><%= option.label %></label>
+		</div>
+		<% }) %>
+	</div>
+	<% } else if (field.type === 'select') { %>
+	<select>
+		<% (field.options || []).forEach(option => { %>
+		<option value="<%= option.value %>"><%= option.label %></option>
+		<% }) %>
+	</select>
 	<% } else { %>
 	<input type="<%= field.type %>" placeholder="<%= field.placeholder || '' %>">
 	<% } %>

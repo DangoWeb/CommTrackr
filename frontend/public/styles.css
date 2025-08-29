@@ -95,7 +95,8 @@ code {
 }
 
 input,
-textarea {
+textarea,
+select {
 	border: none;
 	width: -webkit-fill-available;
 	max-width: 500px;
@@ -103,10 +104,12 @@ textarea {
 	background: transparent;
 	border-bottom: 1px solid #ffffff;
 	outline: none;
+	border-radius: 1px;
 }
 
 input.hidden,
-textarea.hidden {
+textarea.hidden,
+select.hidden {
 	display: none;
 }
 
@@ -135,6 +138,42 @@ textarea {
 .checkbox.checked {
 	background: #ffffff;
 	color: #161616;
+}
+
+select {
+	font-size: 15px;
+
+	option {
+		background: #161616;
+		color: #ffffff;
+	}
+}
+
+input[type="radio"] {
+	height: 20px;
+	min-height: unset;
+	width: 20px;
+	appearance: none;
+	border: 1.5px solid #ffffff;
+	border-radius: 100%;
+	transition: 0.25s;
+}
+
+input[type="radio"]:checked {
+	background: #ffffff;
+	transition: 0.25s;
+}
+
+.radioOptions {
+	display: flex;
+	flex-direction: column;
+	gap: 7.5px;
+
+	.radioOption {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
 }
 
 main {

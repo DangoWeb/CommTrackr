@@ -92,6 +92,14 @@ function back() {
     document.getElementById('create')?.classList.add('hidden');
 };
 
+function saveChange(key, value) {
+    localStorage.setItem(key, value);
+    document.querySelector('.fixed2').classList.add('visible');
+    setTimeout(() => {
+        document.querySelector('.fixed2').classList.remove('visible');
+    }, 2000);
+};
+
 document.querySelectorAll('.inputField').forEach(field => {
     field.querySelectorAll('input, textarea').forEach(input => {
         input.addEventListener('keydown', function (event) {
@@ -99,11 +107,7 @@ document.querySelectorAll('.inputField').forEach(field => {
                 event.preventDefault();
                 next();
             };
-            localStorage.setItem(field.id, input.value);
-            document.querySelector('.fixed2').classList.add('visible');
-            setTimeout(() => {
-                document.querySelector('.fixed2').classList.remove('visible');
-            }, 2000);
+            saveChange(field.id, input.value);
         });
     });
     field.querySelectorAll('.checkbox').forEach(checkbox => {
@@ -111,11 +115,15 @@ document.querySelectorAll('.inputField').forEach(field => {
             checkbox.classList.toggle('checked');
             const input = field.querySelector('input[type="checkbox"]');
             input.checked = !input.checked;
-            localStorage.setItem(field.id, input.checked);
-            document.querySelector('.fixed2').classList.add('visible');
-            setTimeout(() => {
-                document.querySelector('.fixed2').classList.remove('visible');
-            }, 2000);
+            saveChange(field.id, input.checked);
+        });
+    });
+    field.querySelectorAll('.radioOption').forEach(radio => {
+        radio.addEventListener('click', function () {
+            field.querySelectorAll('.radioOption input[type="radio"]').forEach(r => r.checked = false);
+            const input = radio.querySelector('input[type="radio"]');
+            input.checked = true;
+            saveChange(field.id, input.value);
         });
     });
 });
@@ -123,7 +131,6 @@ document.querySelectorAll('.inputField').forEach(field => {
 document.addEventListener('keydown', function (event) {
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
         event.preventDefault();
-        console.log('Step:', step);
         if (step === 0) {
             start();
         } else {
