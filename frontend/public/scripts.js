@@ -19,7 +19,7 @@ function anim_out() {
 window.onload = function () {
     anim_in();
     document.querySelectorAll('.inputField').forEach(field => {
-        field.querySelectorAll('input, textarea').forEach(input => {
+        field.querySelectorAll('input:not([type="radio"]), textarea').forEach(input => {
             if (localStorage.getItem(field.id)) {
                 input.value = localStorage.getItem(field.id);
                 document.querySelector('.fixed2').classList.add('visible');
@@ -33,6 +33,26 @@ window.onload = function () {
                 checkbox.classList.add('checked');
                 const input = field.querySelector('input[type="checkbox"]');
                 input.checked = true;
+                document.querySelector('.fixed2').classList.add('visible');
+                setTimeout(() => {
+                    document.querySelector('.fixed2').classList.remove('visible');
+                }, 2000);
+            };
+        });
+        field.querySelectorAll('.radioOption').forEach(radio => {
+            const input = radio.querySelector('input[type="radio"]');
+            if (localStorage.getItem(field.id) === input.value) {
+                field.querySelectorAll('.radioOption input[type="radio"]').forEach(r => r.checked = false);
+                input.checked = true;
+                document.querySelector('.fixed2').classList.add('visible');
+                setTimeout(() => {
+                    document.querySelector('.fixed2').classList.remove('visible');
+                }, 2000);
+            };
+        });
+        field.querySelectorAll('select').forEach(select => {
+            if (localStorage.getItem(field.id)) {
+                select.value = localStorage.getItem(field.id);
                 document.querySelector('.fixed2').classList.add('visible');
                 setTimeout(() => {
                     document.querySelector('.fixed2').classList.remove('visible');
@@ -63,6 +83,17 @@ function next() {
             if (input) {
                 if (input.type === 'checkbox') {
                     if (!input.checked) {
+                        input.focus();
+                        shake(currentField);
+                        return;
+                    };
+                } else if (input.type === 'radio') {
+                    const radios = currentField.querySelectorAll('input[type="radio"]');
+                    var checked = false;
+                    radios.forEach(radio => {
+                        if (radio.checked) checked = true;
+                    });
+                    if (!checked) {
                         input.focus();
                         shake(currentField);
                         return;
@@ -117,6 +148,7 @@ function back() {
 
 function saveChange(key, value) {
     localStorage.setItem(key, value);
+    console.log(key, value)
     document.querySelector('.fixed2').classList.add('visible');
     setTimeout(() => {
         document.querySelector('.fixed2').classList.remove('visible');
@@ -124,13 +156,13 @@ function saveChange(key, value) {
 };
 
 document.querySelectorAll('.inputField').forEach(field => {
-    field.querySelectorAll('input, textarea').forEach(input => {
+    field.querySelectorAll('input:not([type="radio"]), textarea').forEach(input => {
         input.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 next();
             };
-            saveChange(field.id, input.value);
+            setTimeout(() => saveChange(field.id, input.value), 100);
         });
     });
     field.querySelectorAll('.checkbox').forEach(checkbox => {
@@ -138,15 +170,20 @@ document.querySelectorAll('.inputField').forEach(field => {
             checkbox.classList.toggle('checked');
             const input = field.querySelector('input[type="checkbox"]');
             input.checked = !input.checked;
-            saveChange(field.id, input.checked);
+            setTimeout(() => saveChange(field.id, input.checked), 100);
         });
     });
     field.querySelectorAll('.radioOption').forEach(radio => {
-        radio.addEventListener('click', function () {
+        radio.addEventListener('change', function () {
             field.querySelectorAll('.radioOption input[type="radio"]').forEach(r => r.checked = false);
             const input = radio.querySelector('input[type="radio"]');
             input.checked = true;
-            saveChange(field.id, input.value);
+            setTimeout(() => saveChange(field.id, input.value), 100);
+        });
+    });
+    field.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', function () {
+            setTimeout(() => saveChange(field.id, select.selectedOptions[0].value), 100);
         });
     });
 });
@@ -173,6 +210,11 @@ async function create() {
         if (input) {
             if (input.type === 'checkbox') {
                 data[field.id] = input.checked;
+            } if (input.type === 'radio') {
+                const radios = field.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    if (radio.checked) data[field.id] = radio.value;
+                });
             } else {
                 data[field.id] = input.value;
             };

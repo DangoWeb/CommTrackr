@@ -2,7 +2,7 @@
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1>
 	<% if (tenant.auth && tenant.auth.enabled) { %>
-	Hey, <%= session[vars.name] || session[vars.userId] %>!
+	Welcome, <%= session[vars.name] || session[vars.userId] %>!
 	<% } else { %>
 	<%= tenant.name %> commissions
 	<% } %>

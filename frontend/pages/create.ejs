@@ -13,15 +13,24 @@
 	<div class="checkbox" change="cms">|||</div>
 	<% } else if (field.type === 'radio') { %>
 	<div class="radioOptions">
+		<% if (!field.required) { %>
+		<div class="radioOption">
+			<input type="radio" id="none" name="none" value="">
+			<label for="none">None</label>
+		</div>
+		<% } %>
 		<% (field.options || []).forEach(option => { %>
 		<div class="radioOption">
-			<input type="radio" id="<%= option.value %>" name="<%= option.value %>" value="<%= option.label %>">
-			<label for="<%= option.value %>"><%= option.label %></label>
+			<input type="radio" id="<%= field.id %>-<%= option.value %>" name="<%= option.value %>" value="<%= option.value %>">
+			<label for="<%= field.id %>-<%= option.value %>"><%= option.label %></label>
 		</div>
 		<% }) %>
 	</div>
 	<% } else if (field.type === 'select') { %>
-	<select>
+	<select id="<%= field.id %>Select">
+		<% if (!field.required) { %>
+		<option value="">None</option>
+		<% } %>
 		<% (field.options || []).forEach(option => { %>
 		<option value="<%= option.value %>"><%= option.label %></option>
 		<% }) %>

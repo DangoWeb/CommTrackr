@@ -156,12 +156,12 @@ app.post('/create', async (req, res) => {
     role: getUserRole(req.session) || 'user'
   } : {};
   if (returnHandler && typeof returnHandler === 'function') {
-    // try {
-    //   await returnHandler(data);
-    // } catch (error) {
-      // console.error('Error in handler function:', error);
+    try {
+      await returnHandler(data);
+    } catch (error) {
+      console.error('Error in handler function:', error);
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
-    // };
+    };
   };
   res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
 });
