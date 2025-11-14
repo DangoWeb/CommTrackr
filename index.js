@@ -108,11 +108,6 @@ function getUserRole(session) {
   return 'user';
 };
 
-// function setUser(newUser = {}) {
-//   if (!newUser.id) return user = {};
-//   user = newUser;
-// };
-
 app.get('/', async (req, res) => {
   if (!on) return res.render('off', { tenant, title: 'Activation - ' });
   if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
@@ -170,6 +165,5 @@ module.exports = {
   routes: app,
   init,
   activate,
-  on: activate,
-  // setUser
+  on: activate
 };
