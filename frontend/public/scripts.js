@@ -6,6 +6,11 @@ document.querySelectorAll('.button[href]').forEach(button => button.addEventList
     }, 750)
 }));
 
+document.getElementById('back')?.addEventListener('click', back);
+document.getElementById('next')?.addEventListener('click', next);
+document.getElementById('start')?.addEventListener('click', start);
+document.getElementById('create')?.addEventListener('click', create);
+
 function anim_in() {
     document.querySelector('main').classList.remove('out');
     document.querySelector('main').classList.add('in');
@@ -68,6 +73,7 @@ window.onload = function () {
 // }, 750)
 
 var step = 0;
+var backDisabled = false;
 
 function start() {
     next();
@@ -237,6 +243,7 @@ async function create() {
                 });;
                 document.getElementById('success').classList.remove('hidden');
                 localStorage.clear();
+                backDisabled = true;
                 document.querySelector('.inner h1').innerText = 'Creation successful';
                 document.querySelector('.inner p').innerText = result.message || 'Your commission was created successfully.';
             } else {
