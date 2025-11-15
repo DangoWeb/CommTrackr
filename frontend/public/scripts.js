@@ -76,12 +76,14 @@ var step = 0;
 var backDisabled = false;
 
 function start() {
+    if (backDisabled) return;
     next();
     document.getElementById('start').classList.add('hidden');
     document.getElementById('next').classList.remove('hidden');
 };
 
 function next() {
+    if (backDisabled) return;
     if (step > 0) {
         const currentField = document.querySelector(`.inputField[step="${step}"]`);
         if (currentField && currentField.classList.contains('required')) {
@@ -135,6 +137,7 @@ function next() {
 };
 
 function back() {
+    if (backDisabled) return;
     if (step > 1) {
         document.querySelector(`.inputField[step="${step}"]`)?.classList.remove('active');
         step--;
@@ -209,6 +212,7 @@ document.addEventListener('keydown', function (event) {
 });
 
 async function create() {
+    if (backDisabled) return;
     anim_out();
     var data = {};
     document.querySelectorAll('.inputField').forEach(field => {
