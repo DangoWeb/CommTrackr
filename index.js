@@ -109,16 +109,16 @@ function getUserRole(session) {
 };
 
 app.get('/', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: 'Activation - ' });
-  if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
+  if (!on) return res.render('off', { tenant, title: 'Activation' });
+  if (!req.session) return res.render('session', { tenant, title: 'Session' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   switch (getUserRole(req.session)) {
     case 'admin':
-      res.render('admin', { tenant, title: 'Admin View - ', session: req.session, vars });
+      res.render('admin', { tenant, title: 'Admin View', session: req.session, vars });
       break;
     case 'dev':
-      res.render('dev', { tenant, title: 'Developer View - ', session: req.session, vars });
+      res.render('dev', { tenant, title: 'Developer View', session: req.session, vars });
       break;
     default:
       res.render('user', { tenant, title: '', session: req.session, vars, fields });
@@ -127,11 +127,11 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/create', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: 'Activation - ' });
-  if (!req.session) return res.render('session', { tenant, title: 'Session - ' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration - ' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate - ' });
-  res.render('create', { tenant, title: 'New Commission - ', session: req.session, vars, fields });
+  if (!on) return res.render('off', { tenant, title: 'Activation' });
+  if (!req.session) return res.render('session', { tenant, title: 'Session' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  res.render('create', { tenant, title: 'New Commission', session: req.session, vars, fields });
 });
 
 app.post('/create', async (req, res) => {
@@ -159,6 +159,10 @@ app.post('/create', async (req, res) => {
     };
   };
   res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
+});
+
+app.use((req, res) => {
+  res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested resource was not found.' });
 });
 
 module.exports = {

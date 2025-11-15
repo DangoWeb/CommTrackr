@@ -1,6 +1,6 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1>Authentication required.</h1>
+<h1>Authentication Required</h1>
 <p>You'll need to log into your <%= tenant.auth.provider || tenant.name %> account before managing your commissions.</p>
 <% if (tenant.auth.url) { %>
 <div class="buttons">

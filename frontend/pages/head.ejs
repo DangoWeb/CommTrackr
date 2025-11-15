@@ -4,18 +4,18 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><%= title %><%= tenant.name %></title>
+	<title><%= title %><%= title.length ? ' - ' : '' %><%= tenant.name %></title>
 	<meta name="description" content="<%= tenant.description %>">
 	<meta name="keywords" content="commission, commissions">
 	<meta name="author" content="CommTrackr">
 	<meta name="theme-color" content="<%= tenant.themeColor %>">
-	<meta property="og:title" content="<%= title %><%= tenant.name %>">
+	<meta property="og:title" content="<%= title %><%= title.length ? ' - ' : '' %><%= tenant.name %>">
 	<meta property="og:description" content="<%= tenant.description %>">
 	<meta property="og:image" content="<%= tenant.banner %>">
 	<meta property="og:url" content="<%= tenant.domain %>">
 	<meta property="og:type" content="website">
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="<%= title %><%= tenant.name %>">
+	<meta name="twitter:title" content="<%= title %><%= title.length ? ' - ' : '' %><%= tenant.name %>">
 	<meta name="twitter:description" content="<%= tenant.description %>">
 	<meta name="twitter:image" content="<%= tenant.banner %>">
 	<link rel="icon" href="<%= tenant.logo %>" type="image/png">

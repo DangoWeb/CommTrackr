@@ -4,7 +4,7 @@
 	<% if (tenant.auth && tenant.auth.enabled) { %>
 	Welcome, <%= session[vars.name] || session[vars.userId] %>!
 	<% } else { %>
-	<%= tenant.name %> commissions
+	<%= tenant.name %> Commissions
 	<% } %>
 </h1>
 <p>View and manage your past commissions.</p>

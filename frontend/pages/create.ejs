@@ -1,6 +1,6 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1>New commission</h1>
+<h1>New Commission</h1>
 <p>Estimated time to complete: 2 minutes</p>
 <% var step = 1; fields.forEach(field => { %>
 <div class="inputField <%= field.required ? 'required' : '' %>" id="<%= field.id %>" step="<%= step %>">
