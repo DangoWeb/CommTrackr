@@ -134,6 +134,12 @@ function next() {
     } else {
         document.getElementById('back')?.classList.remove('hidden');
     };
+    // focus first input of the new step
+    const newField = document.querySelector(`.inputField[step="${step}"]`);
+    if (newField) {
+        const input = newField.querySelector('input, textarea, select');
+        if (input) input.focus();
+    };
 };
 
 function back() {
@@ -153,6 +159,12 @@ function back() {
         document.getElementById('back')?.classList.remove('hidden');
     };
     document.getElementById('create')?.classList.add('hidden');
+    // focus first input of the new step
+    const newField = document.querySelector(`.inputField[step="${step}"]`);
+    if (newField) {
+        const input = newField.querySelector('input, textarea, select');
+        if (input) input.focus();
+    };
 };
 
 function saveChange(key, value) {
