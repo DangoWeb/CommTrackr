@@ -79,7 +79,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
       label: 'Website Name', // Field label
       description: 'The name of the website or project.', // Field description
       placeholder: 'e.g. My Website', // Placeholder text for the field
-      required: true // Whether the field is required
+      required: true, // Whether the field is required
       options: [ // Options for select or radio fields
         {
           label: 'Option 1', // Option label
