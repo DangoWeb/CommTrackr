@@ -147,15 +147,12 @@ app.get('/', async (req, res) => {
   }).filter(commission => commission !== null);
   switch (getUserRole(req.session)) {
     case 'admin':
-      res.render('admin', { tenant, title: 'Admin View', session: req.session, vars });
-      break;
+      return res.render('admin', { tenant, title: 'Admin View', session: req.session, vars });
     case 'dev':
-      res.render('dev', { tenant, title: 'Developer View', session: req.session, vars });
-      break;
+      return res.render('dev', { tenant, title: 'Developer View', session: req.session, vars });
     default:
       req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-      res.render('user', { tenant, title: '', session: req.session, vars, fields });
-      break;
+      return res.render('user', { tenant, title: '', session: req.session, vars, fields });
   };
 });
 
@@ -164,7 +161,7 @@ app.get('/create', async (req, res) => {
   if (!req.session) return res.render('session', { tenant, title: 'Session' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
-  res.render('create', { tenant, title: 'New Commission', session: req.session, vars, fields });
+  return res.render('create', { tenant, title: 'New Commission', session: req.session, vars, fields });
 });
 
 app.post('/create', async (req, res) => {
@@ -191,7 +188,7 @@ app.post('/create', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
+  return res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
 });
 
 app.put('/sync', async (req, res) => {
@@ -211,7 +208,7 @@ app.put('/sync', async (req, res) => {
 });
 
 app.use((req, res) => {
-  res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested resource was not found.' });
+  return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested resource was not found.' });
 });
 
 module.exports = {
