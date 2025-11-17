@@ -102,11 +102,11 @@ app.listen(3000, () => {
 
 ## Session Variables Setup
 
-These variables must be set in your `req.session` object to enable CommTrackr functionality:
+These variables must be set in your `req.session` object to enable CommTrackr functionality. Alternatively, you can modify the variable names to match your custom session configuration using the `vars` configuration during initialization.
 
 ### userId
 
-`req.session.userId` must contain a unique identifier for the user, such as a username or user ID. This is used to track user-specific data. This must be present for CommTrackr to detect a logged-in user.
+`userId` must contain a unique identifier for the user, such as a username or user ID. This is used to track user-specific data. This must be present for CommTrackr to detect a logged-in user.
 
 Type: `String`
 
@@ -118,31 +118,31 @@ Session Example: `'id'`
 
 ### userName
 
-`req.session.userName` should contain the name of the user. This is used for display purposes in the CommTrackr interface. Fallback to `userId` if not set.
+`userName` should contain the name of the user. This is used for display purposes in the CommTrackr interface. Fallback to `userId` if not set.
 
 Type: `String`
 
 Default: `'name'`
 
-Fallback: `req.session.userId`
+Fallback: `userId`
 
 Session Example: `'John Doe'`
 
 ### role
 
-`req.session.role` should contain the role of the user: 'admin', `dev`, or 'user'. This is used to control access to certain features and functionalities within CommTrackr.
+`role` should contain the role of the user: 'admin', `dev`, or 'user'. This is used to control access to certain features and functionalities within CommTrackr.
 
 Type: `String`
 
 Default: `'role'`
 
-Fallback: `user`
+Fallback: `'user'`
 
 Session Example: `'user'`, `'dev'`, `'admin'`
 
 ### roleAliases
 
-`req.session.role` can also be set to custom role names. Use `roleAliases` to map your custom role names to the standard roles used by CommTrackr.
+`role` can also be set to custom role names. Use `roleAliases` to map your custom role names to the standard roles used by CommTrackr.
 
 Type: `Object`
 
@@ -154,7 +154,7 @@ Default:
 
 ### access
 
-`req.session.access` can be used as an alternative to `role` for access control. It should contain numeric access levels. Use the `access` configuration to define which levels correspond to 'user', 'dev', and 'admin'.
+`access` can be used as an alternative to `role` for access control. It should contain numeric access levels. Use the `access` configuration to define which levels correspond to 'user', 'dev', and 'admin'.
 
 Type: `Array`
 
@@ -166,7 +166,7 @@ Default:
 
 ### commissions
 
-`req.session.commissions` should be an array of commission objects associated with the user. Each commission object should have the following structure:
+`commissions` should be an array of commission objects associated with the user. Each commission object should have the following structure:
 
 Type: `Array`
 
