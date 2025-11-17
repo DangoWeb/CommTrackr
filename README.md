@@ -75,7 +75,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
   fields: [
     {
       id: 'name', // Unique identifier for the field
-      type: 'text', // Field type (e.g., text, number, date, textarea, checkbox, radio, select)
+      type: 'text', // Field type ('text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select')
       label: 'Website Name', // Field label
       description: 'The name of the website or project.', // Field description
       placeholder: 'e.g. My Website', // Placeholder text for the field
@@ -179,9 +179,17 @@ Session Example:
   {
     id: 'unique-commission-id', // Unique identifier for the commission
     client: 'Client Name', // Name of the client
-    amount: 1000, // Commission amount
+    amount: 1000, // Commission amount, or null if not applicable
+    currency: 'USD', // Currency code for the commission amount
     date: '2023-10-01', // Date of the commission
-    status: 'pending' // Status of the commission (e.g., 'pending', 'paid')
+    status: 'pending', // Status of the commission ('completed', 'in-progress', 'on-hold', 'cancelled')
+    tasks: [ // Array of tasks associated with the commission
+      {
+        done: false, // Task completion status
+        content: '' // Task description
+      }
+    ],
+    tasksLocked: false // Whether tasks are locked from being edited by user
   }
 ]
 ```
