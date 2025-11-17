@@ -191,17 +191,20 @@ Session Example:
   {
     id: 'unique-commission-id', // Unique identifier for the commission
     user: 'userId', // Commission creator's unique userId. Should match the userId variable, otherwise the commission will only be accessible in admin/dev views
-    amount: 1000, // Commission amount, or null if not applicable
-    currency: 'USD', // Currency code for the commission amount
-    date: '2023-10-01', // Date of the commission
-    status: 'pending', // Status of the commission ('completed', 'in-progress', 'on-hold', 'cancelled')
+    amount: 1000, // Commission amount as a number, or null if not applicable. Defaults to null
+    currency: 'USD', // Currency code for the commission amount as a string. Defaults to 'USD'
+    date: '2023-10-01', // Date of the commission in any valid date/datetime format. Defaults to null
+    status: 'in-progress', // Status of the commission ('completed', 'in-progress', 'on-hold', 'cancelled')
+    fields: { // Custom fields associated with the commission
+      'id': 'value' // Key-value pairs for custom fields
+    },
     tasks: [ // Array of tasks associated with the commission
       {
-        done: false, // Task completion status
-        content: '' // Task description
+        done: false, // Task completion status. Defaults to false
+        content: '' // Task description. Defaults to ''
       }
     ],
-    tasksLocked: false // Whether tasks are locked from being edited by user
+    locked: false // Whether commission is locked from being edited by user. Defaults to false
   }
 ]
 ```
