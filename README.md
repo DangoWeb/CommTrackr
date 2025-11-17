@@ -43,6 +43,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
   tenant: {
     slug: 'commtrackr', // Unique identifier for the tenant
     name: 'CommTrackr', // Name of the tenant
+    metaTitle: 'CommTrackr', // Name of the tenant for meta title tags
     description: 'Easily plan, manage, and track client commissions.', // Description of the tenant
     logo: 'http://localhost:3000/commtrackr/logo.png', // Tenant logo image
     themeColor: '#ffffff', // Tenant theme color

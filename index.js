@@ -33,6 +33,7 @@ function init({
   tenant: newTenant = {
     slug: 'commtrackr',
     name: 'CommTrackr',
+    metaTitle: 'CommTrackr',
     description: 'Easily plan, manage, and track client commissions.',
     logo: 'http://localhost:3000/logo.png',
     banner: 'http://localhost:3000/banner_public.png',
@@ -63,6 +64,7 @@ function init({
   tenant = {
     slug: 'commtrackr',
     name: 'CommTrackr',
+    metaTitle: 'CommTrackr',
     description: 'Easily plan, manage, and track client commissions.',
     logo: 'http://localhost:3000/logo.png',
     banner: 'http://localhost:3000/banner_public.png',
