@@ -274,7 +274,35 @@ main {
 		gap: 5px;
 		width: -webkit-fill-available;
 		max-width: 500px;
-		margin-top: 10px;
+		margin-top: 5px;
+
+		#sync {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			margin-bottom: 5px;
+			cursor: pointer;
+
+			svg {
+				height: 12.5px;
+				transition: rotate 0.5s linear;
+
+				path {
+					stroke: #ffffff;
+					stroke-width: 2px;
+				}
+			}
+		}
+
+		#sync.active {
+			user-select: none;
+			pointer-events: none;
+
+			svg {
+				rotate: 360deg;
+				transition: rotate 0.5s linear;
+			}
+		}
 
 		.commission {
 			display: flex;
@@ -287,8 +315,8 @@ main {
 
 			.button {
 				margin-left: auto;
-                width: fit-content;
-                min-width: 35px;
+				width: fit-content;
+				min-width: 35px;
 			}
 
 			p {

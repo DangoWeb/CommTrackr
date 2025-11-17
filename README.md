@@ -194,7 +194,7 @@ Session Example:
     amount: 1000, // Commission amount as a number, or null if not applicable. Defaults to null
     currency: 'USD', // Currency code for the commission amount as a string. Defaults to 'USD'
     date: '2023-10-01', // Date of the commission in any valid date/datetime format. Defaults to null
-    status: 'in-progress', // Status of the commission ('completed', 'in-progress', 'on-hold', 'cancelled')
+    status: 'On Hold', // Status of the commission as a string (e.g., 'Completed', 'In Progress', 'On Hold', 'Cancelled')
     fields: { // Custom fields associated with the commission
       'id': 'value' // Key-value pairs for custom fields
     },

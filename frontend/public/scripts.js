@@ -1,3 +1,5 @@
+if (!appPath) document.body.innerHTML = 'Error: appPath is not defined';
+
 document.querySelectorAll('.button[href]').forEach(button => button.addEventListener('click', function (event) {
     event.preventDefault();
     anim_out();
@@ -10,6 +12,7 @@ document.getElementById('back')?.addEventListener('click', back);
 document.getElementById('next')?.addEventListener('click', next);
 document.getElementById('start')?.addEventListener('click', start);
 document.getElementById('create')?.addEventListener('click', create);
+document.getElementById('sync')?.addEventListener('click', sync);
 
 function anim_in() {
     document.querySelector('main').classList.remove('out');
@@ -134,7 +137,6 @@ function next() {
     } else {
         document.getElementById('back')?.classList.remove('hidden');
     };
-    // focus first input of the new step
     const newField = document.querySelector(`.inputField[step="${step}"]`);
     if (newField) {
         const input = newField.querySelector('input, textarea, select');
@@ -159,7 +161,6 @@ function back() {
         document.getElementById('back')?.classList.remove('hidden');
     };
     document.getElementById('create')?.classList.add('hidden');
-    // focus first input of the new step
     const newField = document.querySelector(`.inputField[step="${step}"]`);
     if (newField) {
         const input = newField.querySelector('input, textarea, select');
@@ -242,7 +243,7 @@ async function create() {
             };
         };
     });
-    await fetch(window.location.href, {
+    await fetch(`${appPath}/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -256,7 +257,7 @@ async function create() {
             if (result.status === 'success') {
                 document.querySelectorAll('.inputField').forEach(field => {
                     field.classList.remove('active');
-                });;
+                });
                 document.getElementById('success').classList.remove('hidden');
                 localStorage.clear();
                 backDisabled = true;
@@ -266,6 +267,32 @@ async function create() {
                 document.querySelectorAll('.inputField').forEach(field => {
                     field.classList.remove('active');
                 });
+                document.getElementById('error').classList.remove('hidden');
+                document.querySelector('.inner h1').innerText = 'Error';
+                document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';
+            };
+            setTimeout(() => {
+                anim_in();
+            }, 750)
+        });
+};
+
+async function sync() {
+    if (backDisabled) return;
+    document.getElementById('sync').classList.add('active');
+    anim_out();
+    await fetch(`${appPath}/sync`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(result => {
+            backDisabled = true;
+            if (result.status === 'success') {
+                window.location.reload();
+            } else {
                 document.getElementById('error').classList.remove('hidden');
                 document.querySelector('.inner h1').innerText = 'Error';
                 document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';

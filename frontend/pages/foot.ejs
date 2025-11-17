@@ -2,6 +2,9 @@
         <p class="fixed">© <%= new Date().getFullYear() %> CommTrackr</p>
         <p class="fixed2">Changes saved</p>
     </main>
+    <script>
+        const appPath = '<%= tenant.domain %><%= tenant.path %>';
+    </script>
     <script src="<%= tenant.domain %><%= tenant.path %>/scripts.js" type="module"></script>
 </body>
 

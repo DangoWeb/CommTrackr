@@ -55,9 +55,9 @@ function init({
   },
   fields: newFields = [],
   handlers: {
-    newCreateHandler = null,
-    newUpdateHandler = null,
-    newSyncHandler = null
+    create: newCreateHandler = null,
+    update: newUpdateHandler = null,
+    sync: newSyncHandler = null
   }
 }) {
   tenant = {
@@ -122,7 +122,7 @@ app.get('/', async (req, res) => {
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   req.session[vars.commissions] = (req.session[vars.commissions] || []).map(commission => {
-    if (!commission.id || !commission.user || (commission.date ? isNaN(new Date(commission.date).getTime()) : false) || !['completed', 'in-progress', 'on-hold', 'cancelled'].some(status => commission.status.includes(status)) || (typeof commission.tasks !== 'object')) return null;
+    if (!commission.id || !commission.user || (commission.date ? isNaN(new Date(commission.date).getTime()) : false) || (typeof commission.status !== 'string') || (typeof commission.tasks !== 'object')) return null;
     return {
       id: commission.id,
       user: commission.user,
@@ -190,6 +190,22 @@ app.post('/create', async (req, res) => {
     };
   };
   res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
+});
+
+app.put('/sync', async (req, res) => {
+  if (!on) return res.status(503).json({ status: 'error', message: 'Service is currently offline.' });
+  if (!req.session) return res.status(401).json({ status: 'error', message: 'No session found. Please enable cookies and try again.' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: 'User not authenticated. Please log in and try again.' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
+  if (syncHandler && typeof syncHandler === 'function') {
+    try {
+      await syncHandler(req);
+    } catch (error) {
+      console.error('Error in handler function:', error);
+      return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
+    };
+  };
+  res.status(200).json({ status: 'success', message: 'Your commissions were synchronized successfully.' });
 });
 
 app.use((req, res) => {
