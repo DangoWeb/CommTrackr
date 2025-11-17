@@ -1,6 +1,14 @@
 const commtrackr = require('./index.js');
 
-async function commTrackrHandler(data) {
+async function createHandler(data) {
+    return data;
+};
+
+async function updateHandler(req, data) {
+    return data;
+};
+
+async function syncHandler(req, data) {
     return data;
 };
 
@@ -55,12 +63,24 @@ describe('CommTrackr Backend Initialization', () => {
                     required: true
                 }
             ]),
-            handler: commTrackrHandler,
+            handlers: {
+                create: createHandler,
+                update: updateHandler,
+                sync: syncHandler
+            }
         })).not.toThrow();
     });
-    test('handler', async () => {
-        expect(typeof commTrackrHandler).toBe('function');
-        const result = await commTrackrHandler({ test: 'data' });
+    test('handlers', async () => {
+        expect(typeof createHandler).toBe('function');
+        var result = await createHandler({ test: 'data' });
+        expect(typeof result).toBe('object');
+        expect(result).toHaveProperty('test', 'data');
+        expect(typeof updateHandler).toBe('function');
+        result = await updateHandler({}, { test: 'data' });
+        expect(typeof result).toBe('object');
+        expect(result).toHaveProperty('test', 'data');
+        expect(typeof syncHandler).toBe('function');
+        result = await syncHandler({}, { test: 'data' });
         expect(typeof result).toBe('object');
         expect(result).toHaveProperty('test', 'data');
     });
