@@ -75,6 +75,15 @@ code {
 	cursor: pointer;
 	user-select: none;
 	transition: 0.25s;
+
+	svg {
+		height: 12.5px;
+
+		path {
+			stroke: #ffffff;
+			stroke-width: 2px;
+		}
+	}
 }
 
 .button.hidden {
@@ -267,6 +276,11 @@ main {
 		transition: 0.25s;
 	}
 
+	#sync.active {
+		user-select: none;
+		pointer-events: none;
+	}
+
 	.commissions {
 		display: flex;
 		flex-direction: column;
@@ -274,35 +288,7 @@ main {
 		gap: 5px;
 		width: -webkit-fill-available;
 		max-width: 500px;
-		margin-top: 5px;
-
-		#sync {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			margin-bottom: 5px;
-			cursor: pointer;
-
-			svg {
-				height: 12.5px;
-				transition: rotate 0.5s linear;
-
-				path {
-					stroke: #ffffff;
-					stroke-width: 2px;
-				}
-			}
-		}
-
-		#sync.active {
-			user-select: none;
-			pointer-events: none;
-
-			svg {
-				rotate: 360deg;
-				transition: rotate 0.5s linear;
-			}
-		}
+		margin-top: 10px;
 
 		.commission {
 			display: flex;

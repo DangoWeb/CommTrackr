@@ -296,10 +296,10 @@ async function sync() {
                 document.getElementById('error').classList.remove('hidden');
                 document.querySelector('.inner h1').innerText = 'Error';
                 document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';
+                setTimeout(() => {
+                    anim_in();
+                }, 750)
             };
-            setTimeout(() => {
-                anim_in();
-            }, 750)
         });
 };
 
