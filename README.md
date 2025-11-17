@@ -88,11 +88,23 @@ commtrackr.init({ // Initialize CommTracker with configurations
       ],
     },
   ],
-  handler: (data) => {
-    // Custom handler function for processing commission data
-    // This function is called when a commission is created or updated
-    // You can implement your own logic here, such as saving to a database
-  }
+  handlers: {
+    create: (req, data) => {
+      // Custom handler function for processing commission data
+      // This function is called when a commission is created
+      // You can implement your own logic here, such as saving to a database
+    },
+    update: (req, data) => {
+      // Custom handler function for updating commission data
+      // This function is called when a commission is updated
+      // You can implement your own logic here, such as saving to a database
+    },
+    sync: (req) => {
+      // Custom handler function for syncing user's commissions
+      // This function is called when the user manually triggers a sync
+      // You can implement your own logic here, such as syncing your commissions session variable
+    },
+  },
 });
 
 app.listen(3000, () => {
@@ -178,7 +190,7 @@ Session Example:
 [
   {
     id: 'unique-commission-id', // Unique identifier for the commission
-    client: 'Client Name', // Name of the client
+    user: 'userId', // Commission creator's unique userId. Should match the userId variable, otherwise the commission will only be accessible in admin/dev views
     amount: 1000, // Commission amount, or null if not applicable
     currency: 'USD', // Currency code for the commission amount
     date: '2023-10-01', // Date of the commission

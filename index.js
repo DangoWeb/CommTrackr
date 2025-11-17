@@ -25,7 +25,9 @@ let on = false;
 let tenant = {};
 let vars = {};
 let fields = [];
-let returnHandler = null;
+let createHandler = null;
+let updateHandler = null;
+let syncHandler = null;
 
 function init({
   tenant: newTenant = {
@@ -52,7 +54,11 @@ function init({
     commissions: 'commissions'
   },
   fields: newFields = [],
-  handler: newHandler = null
+  handlers: {
+    newCreateHandler = null,
+    newUpdateHandler = null,
+    newSyncHandler = null
+  }
 }) {
   tenant = {
     slug: 'commtrackr',
@@ -80,7 +86,9 @@ function init({
     ...newVars
   };
   fields = newFields;
-  returnHandler = newHandler;
+  createHandler = newCreateHandler;
+  updateHandler = newUpdateHandler;
+  syncHandler = newSyncHandler;
 };
 
 function activate(isOn = true) {
@@ -150,9 +158,9 @@ app.post('/create', async (req, res) => {
     name: req.session[vars.name] || req.session[vars.userId],
     role: getUserRole(req.session) || 'user'
   } : {};
-  if (returnHandler && typeof returnHandler === 'function') {
+  if (createHandler && typeof createHandler === 'function') {
     try {
-      await returnHandler(data);
+      await createHandler(req, data);
     } catch (error) {
       console.error('Error in handler function:', error);
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
