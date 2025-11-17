@@ -1,5 +1,5 @@
 <%- include('head.ejs') %>
-<img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1> <%= title || 'Error' %></h1>
-<p><%= message %></p>
+<% if ((typeof tenant !== 'undefined') && tenant && tenant.logo && tenant.name) { %><img src="<%= tenant.logo %>" alt="<%= tenant.name %>"><% } %>
+<% if (typeof title !== 'undefined') { %><h1> <%= title || 'Error' %></h1><% } %>
+<% if (typeof message !== 'undefined') { %><p><%= message %></p><% } %>
 <%- include('foot.ejs') %>

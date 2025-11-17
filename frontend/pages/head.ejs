@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<% if (typeof tenant !== 'undefined') { %>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +23,7 @@
 	<link rel="apple-touch-icon" href="<%= tenant.logo %>">
 	<link rel="stylesheet" href="<%= tenant.domain %><%= tenant.path %>/styles.css">
 </head>
+<% } %>
 
 <body>
 	<main>

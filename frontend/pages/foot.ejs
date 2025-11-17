@@ -1,11 +1,17 @@
             </div>
+        <% if (typeof tenant !== 'undefined') { %>
         <p class="fixed">© <%= new Date().getFullYear() %> CommTrackr</p>
         <p class="fixed2">Changes saved</p>
+        <% } else { %>
+        <p class="fixed">Internal error</p>
+        <% } %>
     </main>
+    <% if (typeof tenant !== 'undefined') { %>
     <script>
         const appPath = '<%= tenant.domain %><%= tenant.path %>';
     </script>
     <script src="<%= tenant.domain %><%= tenant.path %>/scripts.js" type="module"></script>
+    <% } %>
 </body>
 
 </html>
