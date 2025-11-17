@@ -1,0 +1,60 @@
+<%- include('head.ejs') %>
+<img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
+<h1><%= title %></h1>
+<% if (commission.locked) { %><p>This commission is locked from editing.</p><% } %>
+<table>
+	<tr>
+		<th>Status</th>
+		<td><%= commission.status %></td>
+	</tr>
+	<tr>
+		<th>Owner</th>
+		<td><%= commission.user %><%= (commission.user === session[vars.userId]) ? ' (you)' : '' %></td>
+	</tr>
+	<% if (commission.amount !== null) { %>
+	<tr>
+		<th>Amount</th>
+		<td><%= commission.amount %> <%= commission.currency %></td>
+	</tr>
+	<% } %>
+	<% if (commission.date !== null) { %>
+	<tr>
+		<th>Date</th>
+		<td><%= new Date(commission.date).toLocaleString() %></td>
+	</tr>
+	<% } %>
+</table>
+<table>
+	<% for (const field of fields) { %>
+	<tr>
+		<th><%= field.label %></th>
+		<% switch (field.type) {
+			case 'number': %>
+		<td><%= (commission.fields[field.id] === null) ? '-' : Number(commission.fields[field.id]) %></td>
+		<% break;
+			case 'date': %>
+		<td><%= isNaN(new Date(commission.fields[field.id]).getTime()) ? '-' : new Date(commission.fields[field.id]).toLocaleString() %></td>
+		<% break;
+			case 'checkbox': %>
+		<td><%= commission.fields[field.id] ? 'Yes': 'No' %></td>
+		<% break;
+			case 'radio': %>
+		<td><%= commission.fields[field.id] || '-' %></td>
+		<% break;
+			case 'select': %>
+		<td><%= commission.fields[field.id] || '-' %></td>
+		<% break;
+			default: %>
+		<td><%= commission.fields[field.id] || '-' %></td>
+		<% break;
+			} %>
+	</tr>
+	<% } %>
+</table>
+<div class="buttons">
+	<a class="button" href="<%= tenant.domain %><%= tenant.path %>">Back</a>
+	<% if (!commission.locked || (role !== 'user')) { %>
+	<a class="button" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Edit</a>
+	<% } %>
+</div>
+<%- include('foot.ejs') %>

@@ -204,7 +204,40 @@ app.put('/sync', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  res.status(200).json({ status: 'success', message: 'Your commissions were synchronized successfully.' });
+  return res.status(200).json({ status: 'success', message: 'Your commissions were synchronized successfully.' });
+});
+
+app.get('/:id', async (req, res) => {
+  if (!on) return res.render('off', { tenant, title: 'Activation' });
+  if (!req.session) return res.render('session', { tenant, title: 'Session' });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  req.session[vars.commissions] = (req.session[vars.commissions] || []).map(commission => {
+    if (!commission.id || !commission.user || (commission.date ? isNaN(new Date(commission.date).getTime()) : false) || (typeof commission.status !== 'string') || (typeof commission.tasks !== 'object')) return null;
+    return {
+      id: commission.id,
+      user: commission.user,
+      amount: commission.amount ? Number(commission.amount) : null,
+      currency: commission.currency ? String(commission.currency) : 'USD',
+      date: commission.date ? new Date(commission.date) : null,
+      status: commission.status,
+      fields: fields.reduce((acc, field) => {
+        acc[field.id] = (commission.fields && (commission.fields[field.id] !== undefined)) ? commission.fields[field.id] : null;
+        return acc;
+      }, {}),
+      tasks: (commission.tasks || []).map(task => {
+        return {
+          done: task.done || false,
+          content: task.content ? String(task.content) : ''
+        }
+      }),
+      locked: commission.locked || false
+    };
+  }).filter(commission => commission !== null);
+  if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
+  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (commission.user === req.session[vars.userId]));
+  if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
+  return res.render('commission', { tenant, title: `Commission ${commission.id}`, session: req.session, vars, fields, role: getUserRole(req.session), commission });
 });
 
 app.use((req, res) => {

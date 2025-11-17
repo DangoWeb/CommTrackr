@@ -254,7 +254,8 @@ main {
 		}
 	}
 
-	.inner:has(.commissions) {
+	.inner:has(.commissions),
+	.inner:has(table) {
 		overflow: scroll;
 	}
 
@@ -328,6 +329,17 @@ main {
 			opacity: 1;
 			transition: 0.25s;
 		}
+	}
+
+	table {
+		display: flex;
+		padding: 12.5px 0;
+		background: #161616;
+		border-radius: 10px;
+		text-align: left;
+		border-spacing: 20px 4px;
+		width: -webkit-fill-available;
+		max-width: 500px;
 	}
 }
 
