@@ -229,12 +229,13 @@ main {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		justify-content: center;
+		justify-content: flex-start;
 		align-self: center;
 		gap: 10px;
 		width: 80%;
 		max-width: 1000px;
-		height: 100%;
+		height: fit-content;
+		max-height: 100%;
 		position: relative;
 		transition-timing-function: ease-in-out;
 		opacity: 0;
@@ -242,6 +243,10 @@ main {
 		> img {
 			width: 50px;
 		}
+	}
+
+	.inner:has(.commissions) {
+		overflow: scroll;
 	}
 
 	.inputField {
@@ -260,6 +265,55 @@ main {
 		overflow: hidden;
 		opacity: 0;
 		transition: 0.25s;
+	}
+
+	.commissions {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 5px;
+		width: -webkit-fill-available;
+		max-width: 500px;
+		margin-top: 10px;
+
+		.commission {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			width: -webkit-fill-available;
+			justify-content: flex-start;
+			position: relative;
+			padding-left: 10px;
+
+			.button {
+				margin-left: auto;
+                width: fit-content;
+                min-width: 35px;
+			}
+
+			p {
+				margin-right: 20px;
+			}
+		}
+
+		.commission::before {
+			content: "";
+			height: -webkit-fill-available;
+			width: min(80%, 450px);
+			background: transparent;
+			border-top: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			position: absolute;
+			margin-left: -50px;
+			opacity: 0;
+			transition: 0.25s;
+		}
+
+		.commission:has(.button:hover)::before {
+			margin-left: -10px;
+			opacity: 1;
+			transition: 0.25s;
+		}
 	}
 }
 

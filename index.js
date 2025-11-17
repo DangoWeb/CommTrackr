@@ -121,6 +121,28 @@ app.get('/', async (req, res) => {
   if (!req.session) return res.render('session', { tenant, title: 'Session' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  req.session[vars.commissions] = (req.session[vars.commissions] || []).map(commission => {
+    if (!commission.id || !commission.user || (commission.date ? isNaN(new Date(commission.date).getTime()) : false) || !['completed', 'in-progress', 'on-hold', 'cancelled'].some(status => commission.status.includes(status)) || (typeof commission.tasks !== 'object')) return null;
+    return {
+      id: commission.id,
+      user: commission.user,
+      amount: commission.amount ? Number(commission.amount) : null,
+      currency: commission.currency ? String(commission.currency) : 'USD',
+      date: commission.date ? new Date(commission.date) : null,
+      status: commission.status,
+      fields: fields.reduce((acc, field) => {
+        acc[field.id] = (commission.fields && (commission.fields[field.id] !== undefined)) ? commission.fields[field.id] : null;
+        return acc;
+      }, {}),
+      tasks: (commission.tasks || []).map(task => {
+        return {
+          done: task.done || false,
+          content: task.content ? String(task.content) : ''
+        }
+      }),
+      locked: commission.locked || false
+    };
+  }).filter(commission => commission !== null);
   switch (getUserRole(req.session)) {
     case 'admin':
       res.render('admin', { tenant, title: 'Admin View', session: req.session, vars });
@@ -129,6 +151,7 @@ app.get('/', async (req, res) => {
       res.render('dev', { tenant, title: 'Developer View', session: req.session, vars });
       break;
     default:
+      req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
       res.render('user', { tenant, title: '', session: req.session, vars, fields });
       break;
   };
