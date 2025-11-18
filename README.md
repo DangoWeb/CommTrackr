@@ -94,11 +94,16 @@ commtrackr.init({ // Initialize CommTracker with configurations
       // Custom handler function for processing commission data
       // This function is called when a commission is created
       // You can implement your own logic here, such as saving to a database
+      // data contains the commission fields data array
+      // Action metadata can be accessed via data.createdAt and data.createdBy
     },
     update: (req, data) => {
       // Custom handler function for updating commission data
       // This function is called when a commission is updated
       // You can implement your own logic here, such as saving to a database
+      // data contains the updated commission object
+      // Action metadata can be accessed via data.updatedAt and data.updatedBy
+      // Updated fields can be accessed via data.fields
     },
     sync: (req) => {
       // Custom handler function for syncing user's commissions
