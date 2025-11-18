@@ -26,6 +26,12 @@ function anim_out() {
 
 window.onload = function () {
     anim_in();
+    if (document.referrer && (document.referrer !== window.location.href)) {
+        document.querySelector('.fixed3').classList.add('visible');
+        document.querySelector('.fixed3').addEventListener('click', function () {
+            window.history.back();
+        });
+    };
     document.querySelectorAll('.inputField').forEach(field => {
         field.querySelectorAll('input:not([type="radio"]), textarea').forEach(input => {
             if (localStorage.getItem(field.id)) {
@@ -69,6 +75,14 @@ window.onload = function () {
         });
     });
 };
+
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) anim_in();
+});
+
+window.addEventListener('pagehide', (event) => {
+    if (event.persisted) anim_out();
+});
 
 // anim_out();
 // setTimeout(() => {
