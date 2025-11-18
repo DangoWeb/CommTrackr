@@ -53,8 +53,7 @@
 </table>
 <div class="buttons">
 	<a class="button" href="<%= tenant.domain %><%= tenant.path %>">Back</a>
-	<% if (!commission.locked || (role !== 'user')) { %>
-	<a class="button" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Edit</a>
-	<% } %>
+	<% if (!commission.locked || (role !== 'user')) { %><a class="button" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Edit</a><% } %>
+	<% commission.links.forEach(link => { %><a class="button" href="<%= link.url %>" target="_blank" rel="noopener noreferrer"><%= link.label %></a><% }); %>
 </div>
 <%- include('foot.ejs') %>
