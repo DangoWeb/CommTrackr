@@ -13,6 +13,7 @@
 		"test": "jest"
 	},
 	"keywords": [
+		"commission",
 		"commissions",
 		"tracking",
 		"management"
@@ -34,10 +35,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/dangoweb/commtrackr.git"
+		"url": "https://github.com/DangoWeb/CommTrackr.git"
 	},
 	"publishConfig": {
 		"access": "public",
 		"tag": "latest"
-	}
+	},
+	"homepage": "https://commtrackr.dangoweb.com"
 }
