@@ -280,8 +280,7 @@ main {
 		}
 	}
 
-	.inner:has(.commissions),
-	.inner:has(table) {
+	.inner:not(:has(.inputField:not(.active))) {
 		overflow: scroll;
 	}
 

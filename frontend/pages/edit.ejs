@@ -1,9 +1,8 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1>New Commission</h1>
-<p>Estimated time to complete: 2 minutes</p>
-<% var step = 1; fields.forEach(field => { %>
-<div class="inputField <%= field.required ? 'required' : '' %>" id="<%= field.id %>" step="<%= step %>">
+<h1><%= title %></h1>
+<% fields.forEach(field => { %>
+<div class="inputField active <%= field.required ? 'required' : '' %>" id="<%= field.id %>">
 	<h3><%= field.label %><%= field.required ? '*' : '' %></h3>
 	<p><%= field.required ? 'Required' : 'Optional' %><%= field.description ? ': ' + field.description : '' %></p>
 	<% if (field.type === 'textarea') { %>
@@ -39,13 +38,13 @@
 	<input id="<%= field.id %>Input" type="<%= field.type %>" placeholder="<%= field.placeholder || '' %>">
 	<% } %>
 </div>
-<% step++; }) %>
+<% }) %>
 <div class="buttons">
-	<div id="back" class="button hidden">Back</div>
-	<div id="next" class="button active hidden">Next</div>
-	<div id="start" class="button active">Start</div>
-	<div id="create" class="button active hidden">Create</div>
-	<a id="success" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>">Return</a>
-	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/create">Restart</a>
+	<% if (!commission.locked || (role !== 'user')) { %><div id="save" class="button">Save</div><% } %>
+	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Restart</a>
 </div>
+<script>
+    const commissionId = '<%= commission.id %>';
+    const restore = <%- JSON.stringify(commission.fields) %>;
+</script>
 <%- include('foot.ejs') %>

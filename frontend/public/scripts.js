@@ -13,6 +13,7 @@ document.getElementById('next')?.addEventListener('click', next);
 document.getElementById('start')?.addEventListener('click', start);
 document.getElementById('create')?.addEventListener('click', create);
 document.getElementById('sync')?.addEventListener('click', sync);
+document.getElementById('save')?.addEventListener('click', save);
 
 function anim_in() {
     document.querySelector('main').classList.remove('out');
@@ -74,6 +75,30 @@ window.onload = function () {
             };
         });
     });
+    if (restore) {
+        Object.keys(restore).forEach(key => {
+            const field = document.getElementById(key);
+            if (field) {
+                const input = field.querySelector('input, textarea, select');
+                if (input) {
+                    if (input.type === 'checkbox') {
+                        if (restore[key] === true) {
+                            field.querySelector('.checkbox').classList.add('checked');
+                            input.checked = true;
+                        };
+                    } else if (input.type === 'radio') {
+                        field.querySelectorAll('.radioOption input[type="radio"]').forEach(radio => {
+                            if (radio.value === restore[key]) {
+                                radio.checked = true;
+                            };
+                        });
+                    } else {
+                        input.value = restore[key];
+                    };
+                };
+            };
+        });
+    };
 };
 
 window.addEventListener('pageshow', (event) => {
@@ -307,6 +332,52 @@ async function sync() {
             if (result.status === 'success') {
                 window.location.reload();
             } else {
+                document.getElementById('error').classList.remove('hidden');
+                document.querySelector('.inner h1').innerText = 'Error';
+                document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';
+                setTimeout(() => {
+                    anim_in();
+                }, 750)
+            };
+        });
+};
+
+async function save() {
+    if (backDisabled) return;
+    anim_out();
+    var data = {};
+    document.querySelectorAll('.inputField').forEach(field => {
+        const input = field.querySelector('input, textarea, select');
+        if (input) {
+            if (input.type === 'checkbox') {
+                data[field.id] = input.checked;
+            } if (input.type === 'radio') {
+                const radios = field.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    if (radio.checked) data[field.id] = radio.value;
+                });
+            } else {
+                data[field.id] = input.value;
+            };
+        };
+    });
+    await fetch(`${appPath}/${commissionId}/edit`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => response.json())
+        .then(result => {
+            backDisabled = true;
+            document.getElementById('save').classList.add('hidden');
+            if (result.status === 'success') {
+                window.location.href = `${appPath}/${commissionId}`;
+            } else {
+                document.querySelectorAll('.inputField').forEach(field => {
+                    field.classList.remove('active');
+                });
                 document.getElementById('error').classList.remove('hidden');
                 document.querySelector('.inner h1').innerText = 'Error';
                 document.querySelector('.inner p').innerText = result.message || 'An unknown error occurred. Please try again later.';
