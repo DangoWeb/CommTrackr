@@ -205,7 +205,13 @@ Session Example:
         content: '' // Task description. Defaults to ''
       }
     ],
-    locked: false // Whether commission is locked from being edited by user. Defaults to false
+    locked: false, // Whether commission is locked from being edited by user. Defaults to false
+    links: [ // Array of links associated with the commission
+      {
+        label: 'Link Label', // Link label
+        url: 'http://example.com' // Link URL
+      }
+    ]
   }
 ]
 ```
