@@ -254,7 +254,7 @@ app.get('/:id/edit', async (req, res) => {
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (commission.user === req.session[vars.userId]));
+  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
   if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
   if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: 'Forbidden', message: 'You do not have permission to edit this commission.' });
   return res.render('edit', { tenant, title: `Edit Commission ${commission.id}`, session: req.session, vars, fields, commission, role: getUserRole(req.session) });
@@ -267,7 +267,7 @@ app.post('/:id/edit', async (req, res) => {
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => (String(commission.id) === String(req.params.id)) && (commission.user === req.session[vars.userId]));
+  const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
   if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: 'The requested commission was not found.' });
   const commission = req.session[vars.commissions][commissionIndex];
   if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: 'You do not have permission to edit this commission.' });
