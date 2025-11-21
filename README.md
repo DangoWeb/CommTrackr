@@ -75,7 +75,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
   },
   fields: [
     {
-      id: 'name', // Unique identifier for the field
+      id: 'name', // Unique identifier for the field. ID 'user' is reserved by the system and may not be used here
       type: 'text', // Field type ('text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select')
       label: 'Website Name', // Field label
       description: 'The name of the website or project.', // Field description

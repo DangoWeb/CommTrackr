@@ -2,6 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const path = require('path');
+const { name } = require('ejs');
 const app = express();
 require('dotenv').config();
 
@@ -87,7 +88,7 @@ function init({
     commissions: 'commissions',
     ...newVars
   };
-  fields = newFields;
+  fields = newFields.filter(field => field.id !== 'user');
   createHandler = newCreateHandler;
   updateHandler = newUpdateHandler;
   syncHandler = newSyncHandler;
@@ -176,7 +177,15 @@ app.get('/create', async (req, res) => {
   if (!req.session) return res.render('session', { tenant, title: 'Session' });
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
-  return res.render('create', { tenant, title: 'New Commission', session: req.session, vars, fields });
+  return res.render('create', {
+    tenant, title: 'New Commission', session: req.session, vars, fields: (getUserRole(req.session) === 'admin') ? [{
+      id: 'user',
+      label: 'User ID',
+      description: 'The identifier of the user for whom this commission is created for, if any.',
+      type: 'text',
+      required: false
+    }, ...fields] : fields
+  });
 });
 
 app.post('/create', async (req, res) => {
@@ -190,11 +199,15 @@ app.post('/create', async (req, res) => {
     if (field.id) data[field.id] = req.body[field.id] || null;
   });
   data.createdAt = new Date();
-  data.createdBy = (tenant.auth && tenant.auth.enabled) ? {
+  data.createdBy = (tenant.auth && tenant.auth.enabled) ? (((getUserRole(req.session) === 'admin') && req.body.user) ? {
+    id: req.body.user,
+    name: req.body.user,
+    role: 'user'
+  } : {
     id: req.session[vars.userId],
-    name: req.session[vars.name] || req.session[vars.userId],
+    name: req.session[vars.userName] || req.session[vars.userId],
     role: getUserRole(req.session) || 'user'
-  } : {};
+  }) : {};
   if (createHandler && typeof createHandler === 'function') {
     try {
       await createHandler(req, data);
@@ -265,7 +278,7 @@ app.post('/:id/edit', async (req, res) => {
   data.updatedAt = new Date();
   data.updatedBy = (tenant.auth && tenant.auth.enabled) ? {
     id: req.session[vars.userId],
-    name: req.session[vars.name] || req.session[vars.userId],
+    name: req.session[vars.userName] || req.session[vars.userId],
     role: getUserRole(req.session) || 'user'
   } : {};
   if (updateHandler && typeof updateHandler === 'function') {
