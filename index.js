@@ -242,7 +242,7 @@ app.get('/:id', async (req, res) => {
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (commission.user === req.session[vars.userId]));
+  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
   if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
   return res.render('commission', { tenant, title: `Commission ${commission.id}`, session: req.session, vars, fields, role: getUserRole(req.session), commission });
 });

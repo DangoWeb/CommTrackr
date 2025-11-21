@@ -313,7 +313,7 @@ main {
 		align-items: flex-start;
 		gap: 5px;
 		width: -webkit-fill-available;
-		max-width: 500px;
+		max-width: 650px;
 		margin-top: 10px;
 
 		.commission {
@@ -364,7 +364,11 @@ main {
 		text-align: left;
 		border-spacing: 20px 4px;
 		width: -webkit-fill-available;
-		max-width: 500px;
+		max-width: 650px;
+
+		td {
+			overflow-wrap: anywhere;
+		}
 	}
 }
 
