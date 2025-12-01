@@ -292,7 +292,7 @@ app.post('/:id/edit', async (req, res) => {
   update.status = req.body.status ? String(req.body.status) : commission.status;
   update.locked = (getUserRole(req.session) === 'admin') ? ((req.body.locked === true) || (req.body.locked === 'true') || (req.body.locked === 'on')) : commission.locked;
   update.sendEmail = (req.body.sendEmail === true) || (req.body.sendEmail === 'true') || (req.body.sendEmail === 'on');
-  disableFieldEditing.forEach(fieldId => {
+  vars.disableFieldEditing.forEach(fieldId => {
     if (fieldId in data) delete data[fieldId];
   });
   if (updateHandler && typeof updateHandler === 'function') {
