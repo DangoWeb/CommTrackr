@@ -240,7 +240,7 @@ document.querySelectorAll('.inputField').forEach(field => {
     });
     field.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', function () {
-            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), field.id, select.selectedOptions[0].value), 100);
+            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), field.id, select.multiple ? Array.from(select.selectedOptions).map(selectedOption => selectedOption.value): select.selectedOptions[0].value), 100);
         });
     });
 });

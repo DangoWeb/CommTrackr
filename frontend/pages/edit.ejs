@@ -1,6 +1,7 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1><%= title %></h1>
+<% if (role === 'admin') { %>
 <% if (!vars.disableFieldEditing.includes('status')) { %>
 <div class="inputField active" id="status">
 	<h3>Status*</h3>
@@ -16,7 +17,16 @@
 <div class="inputField active" id="owner">
 	<h3>Owner*</h3>
 	<p>Required: Commission owner.</p>
+	<% if ((vars.users || []).filter(user => getUserRole(user) === 'user').length) { %>
+	<select id="ownerSelect">
+		<option value="">None</option>
+		<% vars.users.filter(user => getUserRole(user) === 'user').forEach(user => { %>
+		<option value="<%= user[vars.userId] %>" <%= (commission.user === user[vars.userId]) ? 'selected' : '' %>><%= user[vars.userName] ? `${user[vars.userName]} (${user[vars.userId]})` : user[vars.userId] %></option>
+		<% }) %>
+	</select>
+	<% } else { %>
 	<input id="ownerInput" type="text" placeholder="<%= commission.user %>" value="<%= commission.user %>">
+	<% } %>
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('amount')) { %>
@@ -48,6 +58,24 @@
 	<div class="checkbox" change="lockedInput">|||</div>
 </div>
 <% } %>
+<% if (!vars.disableFieldEditing.includes('assignedTo')) { %>
+<div class="inputField active" id="assignedTo">
+	<h3>Assigned To</h3>
+	<p>Optional: The developer to assign this commission to.</p>
+	<% if ((vars.users || []).filter(user => getUserRole(user) !== 'user').length) { %>
+	<select id="assignedToSelect" multiple>
+		<option value="">None</option>
+		<% vars.users.filter(user => getUserRole(user) !== 'user').forEach(user => { %>
+		<option value="<%= user[vars.userId] %>" <%= ((commission.assignedTo || []).includes(user[vars.userId])) ? 'selected' : '' %>><%= user[vars.userName] ? `${user[vars.userName]} (${user[vars.userId]})` : user[vars.userId] %></option>
+		<% }) %>
+	</select>
+	<% } else { %>
+	<p>No developers found.</p>
+	<% } %>
+</div>
+<% } %>
+<% } %>
+<% if (role !== 'dev') { %>
 <% fields.forEach(field => { %>
 <div class="inputField active <%= field.required ? 'required' : '' %>" id="<%= field.id %>">
 	<h3><%= field.label %><%= field.required ? '*' : '' %></h3>
@@ -86,12 +114,15 @@
 	<% } %>
 </div>
 <% }) %>
+<% } %>
+<% if (role !== 'user') { %>
 <div class="inputField active" id="sendEmail">
 	<h3>Send Email</h3>
 	<p>Optional: Send an email to the user regarding this update.</p>
 	<input id="sendEmailInput" type="checkbox" class="hidden">
 	<div class="checkbox" change="sendEmailInput">|||</div>
 </div>
+<% } %>
 <div class="buttons">
 	<% if (!commission.locked || (role !== 'user')) { %><div id="save" class="button">Save</div><% } %>
 	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Restart</a>

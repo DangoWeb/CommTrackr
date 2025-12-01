@@ -54,7 +54,8 @@ function init({
     access: {},
     commissions: 'commissions',
     possibleStatuses: [],
-    disableFieldEditing: []
+    disableFieldEditing: [],
+    users: 'users'
   },
   fields: newFields = [],
   handlers: {
@@ -89,6 +90,7 @@ function init({
     commissions: 'commissions',
     possibleStatuses: [],
     disableFieldEditing: [],
+    users: 'users',
     ...newVars
   };
   fields = newFields.filter(field => field.id !== 'user');
@@ -151,7 +153,8 @@ function verifyAgainstSchema(type, data) {
               label: link.label ? String(link.label) : '',
               url: link.url ? String(link.url) : ''
             };
-          }) : []
+          }) : [],
+          assignedTo: Array.isArray(commission.assignedTo) ? commission.assignedTo.map(assigned => String(assigned)) : []
         };
       }).filter(commission => commission !== null);
   };
@@ -245,7 +248,8 @@ app.get('/:id', async (req, res) => {
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
+  if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
+  const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
   if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
   return res.render('commission', { tenant, title: `Commission ${commission.id}`, session: req.session, vars, fields, role: getUserRole(req.session), commission });
 });
@@ -257,10 +261,11 @@ app.get('/:id/edit', async (req, res) => {
   if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commission = (req.session[vars.commissions] || []).find(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
+  if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
+  const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
   if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
   if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: 'Forbidden', message: 'You do not have permission to edit this commission.' });
-  return res.render('edit', { tenant, title: `Edit Commission ${commission.id}`, session: req.session, vars, fields, commission, role: getUserRole(req.session) });
+  return res.render('edit', { tenant, title: `Edit Commission ${commission.id}`, session: req.session, vars, fields, commission, role: getUserRole(req.session), getUserRole });
 });
 
 app.post('/:id/edit', async (req, res) => {
@@ -270,7 +275,8 @@ app.post('/:id/edit', async (req, res) => {
   if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
-  const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => (String(commission.id) === String(req.params.id)) && (getUserRole(req.session) === 'admin' ? true : (commission.user === req.session[vars.userId])));
+  if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
+  const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => String(commission.id) === String(req.params.id));
   if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: 'The requested commission was not found.' });
   const commission = req.session[vars.commissions][commissionIndex];
   if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: 'You do not have permission to edit this commission.' });
@@ -291,7 +297,8 @@ app.post('/:id/edit', async (req, res) => {
   update.date = req.body.date ? new Date(req.body.date) : commission.date;
   update.status = req.body.status ? String(req.body.status) : commission.status;
   update.locked = (getUserRole(req.session) === 'admin') ? ((req.body.locked === true) || (req.body.locked === 'true') || (req.body.locked === 'on')) : commission.locked;
-  update.sendEmail = (req.body.sendEmail === true) || (req.body.sendEmail === 'true') || (req.body.sendEmail === 'on');
+  update.assignedTo = (getUserRole(req.session) === 'admin') ? (Array.isArray(req.body.assignedTo) ? req.body.assignedTo.filter(id => String(id).trim() !== '') : (req.body.assignedTo ? [String(req.body.assignedTo).trim()] : [])) : commission.assignedTo;
+  update.sendEmail = (getUserRole(req.session) !== 'user') ? ((req.body.sendEmail === true) || (req.body.sendEmail === 'true') || (req.body.sendEmail === 'on')) : true;
   vars.disableFieldEditing.forEach(fieldId => {
     if (fieldId in data) delete data[fieldId];
   });

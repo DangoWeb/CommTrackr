@@ -87,7 +87,8 @@ commtrackr.init({ // Initialize CommTracker with configurations
         value: 'Cancelled'
       }
     ],
-    disableFieldEditing: ['amount', 'currency'] // Array of field IDs that admins cannot edit
+    disableFieldEditing: ['amount', 'currency'], // Array of field IDs that admins cannot edit
+    users: 'users' // req.session object variable for all users array
   },
   fields: [
     {
@@ -120,7 +121,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
       // data contains the updated commission object
       // The constant data.id contains the unique commission ID
       // Action metadata can be accessed via data.updatedAt, data.updatedBy, and data.sendEmail
-      // Updated metadata can be accessed via data.user, data.amount, data.currency, data.date, data.status, and data.locked
+      // Updated metadata can be accessed via data.user, data.amount, data.currency, data.date, data.status, data.locked, and data.assignedTo
       // Updated fields can be accessed via data.fields
     },
     sync: (req) => {
@@ -166,7 +167,7 @@ Session Example: `'John Doe'`
 
 ### role
 
-`role` should contain the role of the user: 'admin', `dev`, or 'user'. This is used to control access to certain features and functionalities within CommTrackr.
+`role` should contain the role of the user: `'admin'`, `'dev'`, or `'user'`. This is used to control access to certain features and functionalities within CommTrackr.
 
 Type: `String`
 
@@ -190,7 +191,7 @@ Default:
 
 ### access
 
-`access` can be used as an alternative to `role` for access control. It should contain numeric access levels. Use the `access` configuration to define which levels correspond to 'user', 'dev', and 'admin'.
+`access` can be used as an alternative to `role` for access control. It should contain numeric access levels. Use the `access` configuration to define which levels correspond to `'user'`, `'dev'`, and `'admin'`.
 
 Type: `Array`
 
@@ -234,7 +235,8 @@ Session Example:
         label: 'Link Label', // Link label
         url: 'http://example.com' // Link URL
       }
-    ]
+    ],
+    assignedTo: ['dev1UserId', 'dev2UserId'] // Array of userIds of the developers assigned to this commission
   }
 ]
 ```
@@ -262,3 +264,11 @@ Default:
 ```javascript
 []
 ```
+
+### users
+
+`users` should contain an array of all users and developers in the system. Each user object should have at least `userId` and defined matching `role` or `access.var` properties. `userName` property is recommended, but not required. This is used for assigning commissions to owners and developers.
+
+Type: `Array`
+
+Default: `'users'`

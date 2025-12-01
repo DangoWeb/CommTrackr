@@ -1,7 +1,7 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1><%= title %></h1>
-<% if (commission.locked) { %><p>This commission is locked from editing.</p><% } %>
+<% if (commission.locked) { %><p>This commission is locked from <%= (role !== 'user') ? 'user' : '' %> editing.</p><% } %>
 <table>
 	<tr>
 		<th>Status</th>
@@ -23,6 +23,10 @@
 		<td><%= new Date(commission.date).toLocaleString() %></td>
 	</tr>
 	<% } %>
+	<tr>
+		<th>Assigned To</th>
+		<td><%= (commission.assignedTo || []).map(assignedTo => vars.users.find(user => user[vars.userId] === assignedTo) ? (vars.users.find(user => user[vars.userId] === assignedTo)[vars.userName] || vars.users.find(user => user[vars.userId] === assignedTo)[vars.userId]) : null).filter(assignedTo => assignedTo).join(', ') || '-' %></td>
+	</tr>
 </table>
 <table>
 	<% for (const field of fields) { %>
