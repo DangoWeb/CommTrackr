@@ -2,7 +2,9 @@
 
 Easily plan, manage, and track client commissions.
 
-![Banner](/frontend/public/banner.png)
+[![Banner](/frontend/public/banner.png)](https://commtrackr.dangoweb.com/)
+
+[![NPM](https://github.com/DangoWeb/CommTrackr/actions/workflows/npm.yml/badge.svg)](https://commtrackr.dangoweb.com/)
 
 ## Requirements
 
