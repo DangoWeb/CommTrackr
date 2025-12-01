@@ -225,6 +225,19 @@ main {
 
 	> .fixed3 {
 		position: absolute;
+		bottom: 25px;
+		right: 30px;
+		opacity: 0;
+		transition: 0.25s;
+	}
+
+	> .fixed3.visible {
+		opacity: 1;
+		transition: 0.25s;
+	}
+
+	> .fixed4 {
+		position: absolute;
 		top: 25px;
 		left: 30px;
 		cursor: pointer;
@@ -232,20 +245,34 @@ main {
 		transition: 0.25s;
 	}
 
-	> .fixed3:not(.visible) {
+	> .fixed4:not(.visible) {
 		user-select: none;
 		pointer-events: none;
 	}
 
-	> .fixed3.visible {
+	> .fixed4.visible {
 		opacity: 0.75;
 		transition: 0.25s;
 	}
 
-	> .fixed3.visible:hover {
+	> .fixed4.visible:hover {
 		opacity: 0.5;
 		left: 25px;
 		padding-right: 5px;
+		transition: 0.25s;
+	}
+
+	> .fixed5 {
+		position: absolute;
+		bottom: 25px;
+		right: 30px;
+		opacity: 0;
+		cursor: pointer;
+		transition: 0.25s;
+	}
+
+	> .fixed5.visible {
+		opacity: 1;
 		transition: 0.25s;
 	}
 

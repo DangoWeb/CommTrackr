@@ -72,6 +72,22 @@ commtrackr.init({ // Initialize CommTracker with configurations
       admin: [2] // Access levels for admins
     },
     commissions: 'commissions', // req.session object variable for user commissions array
+    possibleStatuses: [ // Possible commission status strings
+      {
+        label: 'Completed', // Status label
+        value: 'Completed' // Status value
+      }, {
+        label: 'In Progress',
+        value: 'In Progress'
+      }, {
+        label: 'On Hold',
+        value: 'On Hold'
+      }, {
+        label: 'Cancelled',
+        value: 'Cancelled'
+      }
+    ],
+    disableFieldEditing: ['amount', 'currency'] // Array of field IDs that admins cannot edit
   },
   fields: [
     {
@@ -102,7 +118,9 @@ commtrackr.init({ // Initialize CommTracker with configurations
       // This function is called when a commission is updated
       // You can implement your own logic here, such as saving to a database
       // data contains the updated commission object
-      // Action metadata can be accessed via data.updatedAt and data.updatedBy
+      // The constant data.id contains the unique commission ID
+      // Action metadata can be accessed via data.updatedAt, data.updatedBy, and data.sendEmail
+      // Updated metadata can be accessed via data.user, data.amount, data.currency, data.date, data.status, and data.locked
       // Updated fields can be accessed via data.fields
     },
     sync: (req) => {
@@ -219,4 +237,28 @@ Session Example:
     ]
   }
 ]
+```
+
+### possibleStatuses
+
+`possibleStatuses` should be an array of possible commission status objects. Each status object should have a label and value property.
+
+Type: `Array`
+
+Default:
+
+```javascript
+[]
+```
+
+### disableFieldEditing
+
+`disableFieldEditing` should be an array of field IDs that admins cannot edit. This is useful for restricting access to certain fields even for admin users.
+
+Type: `Array`
+
+Default:
+
+```javascript
+[]
 ```

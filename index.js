@@ -2,7 +2,6 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const path = require('path');
-const { name } = require('ejs');
 const app = express();
 require('dotenv').config();
 
@@ -53,7 +52,9 @@ function init({
     role: 'role',
     roleAliases: {},
     access: {},
-    commissions: 'commissions'
+    commissions: 'commissions',
+    possibleStatuses: [],
+    disableFieldEditing: []
   },
   fields: newFields = [],
   handlers: {
@@ -86,6 +87,8 @@ function init({
     roleAliases: {},
     access: {},
     commissions: 'commissions',
+    possibleStatuses: [],
+    disableFieldEditing: [],
     ...newVars
   };
   fields = newFields.filter(field => field.id !== 'user');
@@ -275,15 +278,26 @@ app.post('/:id/edit', async (req, res) => {
   fields.forEach(field => {
     if (field.id) data[field.id] = req.body[field.id] || null;
   });
-  data.updatedAt = new Date();
-  data.updatedBy = (tenant.auth && tenant.auth.enabled) ? {
+  const update = {};
+  update.updatedAt = new Date();
+  update.updatedBy = (tenant.auth && tenant.auth.enabled) ? {
     id: req.session[vars.userId],
     name: req.session[vars.userName] || req.session[vars.userId],
     role: getUserRole(req.session) || 'user'
   } : {};
+  update.user = (getUserRole(req.session) === 'admin') ? (req.body.owner || commission.user) : commission.user;
+  update.amount = req.body.amount ? Number(req.body.amount) : commission.amount;
+  update.currency = req.body.currency ? String(req.body.currency) : commission.currency;
+  update.date = req.body.date ? new Date(req.body.date) : commission.date;
+  update.status = req.body.status ? String(req.body.status) : commission.status;
+  update.locked = (getUserRole(req.session) === 'admin') ? ((req.body.locked === true) || (req.body.locked === 'true') || (req.body.locked === 'on')) : commission.locked;
+  update.sendEmail = (req.body.sendEmail === true) || (req.body.sendEmail === 'true') || (req.body.sendEmail === 'on');
+  disableFieldEditing.forEach(fieldId => {
+    if (fieldId in data) delete data[fieldId];
+  });
   if (updateHandler && typeof updateHandler === 'function') {
     try {
-      await updateHandler(req, { ...commission, fields: data });
+      await updateHandler(req, { ...commission, ...update, fields: data });
       await syncHandler(req);
     } catch (error) {
       console.error('Error in handler function:', error);
