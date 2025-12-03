@@ -395,20 +395,10 @@ main {
 
 		th {
 			vertical-align: baseline;
-		}
 
-		th.task {
-			display: flex;
-			justify-content: space-between;
-			width: 35px;
-		}
-
-		th.task::before {
-			content: "[";
-		}
-
-		th.task::after {
-			content: "]";
+			h3 {
+				margin-bottom: 5px;
+			}
 		}
 
 		td {

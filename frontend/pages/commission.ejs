@@ -56,10 +56,15 @@
 	<% } %>
 </table>
 <table>
-	<h3>Tasks</h3>
+	<tr>
+		<th>
+			<h3>Tasks</h3>
+			<% if (!commission.tasks.length) { %><p>No tasks.</p><% } %>
+		</th>
+	</tr>
 	<% commission.tasks.forEach(task => { %>
 	<tr>
-		<th class="task"><%= task.done ? 'x' : '' %></th>
+		<th class="checkbox <%= task.done ? 'checked' : '' %>">|||</th>
 		<td><%= task.content %></td>
 	</tr>
 	<% }) %>
