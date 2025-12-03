@@ -188,7 +188,13 @@ app.get('/create', async (req, res) => {
       id: 'user',
       label: 'User ID',
       description: 'The identifier of the user for whom this commission is created for, if any.',
-      type: 'text',
+      type: (vars.users || []).filter(user => getUserRole(user) === 'user').length ? 'select' : 'text',
+      options: (vars.users || []).filter(user => getUserRole(user) === 'user').length ? vars.users.filter(user => getUserRole(user) === 'user').map(user => {
+        return {
+          label: user[vars.userName] ? `${user[vars.userName]} (${user[vars.userId]})` : user[vars.userId],
+          value: user[vars.userId]
+        };
+      }) : [],
       required: false
     }, ...fields] : fields
   });
