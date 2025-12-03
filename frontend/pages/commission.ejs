@@ -55,6 +55,15 @@
 	</tr>
 	<% } %>
 </table>
+<table>
+	<h3>Tasks</h3>
+	<% commission.tasks.forEach(task => { %>
+	<tr>
+		<th class="task"><%= task.done ? 'x' : '' %></th>
+		<td><%= task.content %></td>
+	</tr>
+	<% }) %>
+</table>
 <div class="buttons">
 	<a class="button" href="<%= tenant.domain %><%= tenant.path %>">Back</a>
 	<% if (!commission.locked || (role !== 'user')) { %><a class="button" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Edit</a><% } %>

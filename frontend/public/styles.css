@@ -397,6 +397,20 @@ main {
 			vertical-align: baseline;
 		}
 
+		th.task {
+			display: flex;
+			justify-content: space-between;
+			width: 35px;
+		}
+
+		th.task::before {
+			content: "[";
+		}
+
+		th.task::after {
+			content: "]";
+		}
+
 		td {
 			overflow-wrap: anywhere;
 		}
