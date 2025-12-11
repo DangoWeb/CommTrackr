@@ -95,12 +95,12 @@ commtrackr.init({ // Initialize CommTracker with configurations
   fields: [
     {
       id: 'name', // Unique identifier for the field. ID 'user' is reserved by the system and may not be used here
-      type: 'text', // Field type ('text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select')
+      type: 'text', // Field type ('text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select', 'multiselect')
       label: 'Website Name', // Field label
       description: 'The name of the website or project.', // Field description
       placeholder: 'e.g. My Website', // Placeholder text for the field
       required: true, // Whether the field is required
-      options: [ // Options for select or radio fields
+      options: [ // Options for select, radio, and multiselect fields
         {
           label: 'Option 1', // Option label
           value: 'option1' // Option value

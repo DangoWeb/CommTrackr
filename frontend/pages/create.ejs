@@ -35,6 +35,15 @@
 		<option value="<%= option.value %>"><%= option.label %></option>
 		<% }) %>
 	</select>
+	<% } else if (field.type === 'multiselect') { %>
+	<select id="<%= field.id %>Select" multiple>
+		<% if (!field.required) { %>
+		<option value="">None</option>
+		<% } %>
+		<% (field.options || []).forEach(option => { %>
+		<option value="<%= option.value %>"><%= option.label %></option>
+		<% }) %>
+	</select>
 	<% } else { %>
 	<input id="<%= field.id %>Input" type="<%= field.type %>" placeholder="<%= field.placeholder || '' %>">
 	<% } %>
