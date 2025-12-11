@@ -55,7 +55,7 @@
 	<h3>Locked</h3>
 	<p>Optional: Whether or not the commission is locked from user editing.</p>
 	<input id="lockedInput" type="checkbox" class="hidden" <%= commission.locked ? 'checked' : '' %>>
-	<div class="checkbox" change="lockedInput">|||</div>
+	<div class="checkbox">|||</div>
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('assignedTo')) { %>
@@ -84,7 +84,7 @@
 	<textarea id="<%= field.id %>Textarea" placeholder="<%= field.placeholder || '' %>" <%= field.required ? 'required' : '' %>></textarea>
 	<% } else if (field.type === 'checkbox') { %>
 	<input id="<%= field.id %>Input" type="checkbox" class="hidden">
-	<div class="checkbox" change="<%= field.id %>Input">|||</div>
+	<div class="checkbox">|||</div>
 	<% } else if (field.type === 'radio') { %>
 	<div class="radioOptions">
 		<% if (!field.required) { %>
@@ -116,11 +116,31 @@
 <% }) %>
 <% } %>
 <% if (role !== 'user') { %>
+<table>
+	<tbody>
+		<tr>
+			<th>
+				<h3>Tasks</h3>
+			</th>
+		</tr>
+		<% commission.tasks.forEach(task => { %>
+		<tr>
+			<th class="checkbox <%= task.done ? 'checked' : '' %>" change="task<%= commission.tasks.indexOf(task) %>Done"><input id="task<%= commission.tasks.indexOf(task) %>Done" type="checkbox" class="hidden">|||</th>
+			<td id="task<%= commission.tasks.indexOf(task) %>Input"><%= task.content %></td>
+		</tr>
+		<% }) %>
+		<tr>
+			<th>
+				<div id="addTask" class="button">New Task</div>
+			</th>
+		</tr>
+	</tbody>
+</table>
 <div class="inputField active" id="sendEmail">
 	<h3>Send Email</h3>
 	<p>Optional: Send an email to the user regarding this update.</p>
 	<input id="sendEmailInput" type="checkbox" class="hidden">
-	<div class="checkbox" change="sendEmailInput">|||</div>
+	<div class="checkbox">|||</div>
 </div>
 <% } %>
 <div class="buttons">

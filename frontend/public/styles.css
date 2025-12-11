@@ -74,6 +74,7 @@ code {
 	text-decoration: none;
 	cursor: pointer;
 	user-select: none;
+    min-width: max-content;
 	transition: 0.25s;
 
 	svg {
@@ -147,6 +148,10 @@ textarea {
 .checkbox.checked {
 	background: #ffffff;
 	color: #161616;
+}
+
+.checkbox[disabled] {
+	pointer-events: none;
 }
 
 select {
@@ -403,6 +408,15 @@ main {
 
 		td {
 			overflow-wrap: anywhere;
+
+			input {
+				min-height: unset;
+				font-size: 15px;
+			}
+		}
+
+		.button {
+			margin-top: 5px;
 		}
 	}
 }

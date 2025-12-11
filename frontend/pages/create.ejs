@@ -10,7 +10,7 @@
 	<textarea id="<%= field.id %>Textarea" placeholder="<%= field.placeholder || '' %>"></textarea>
 	<% } else if (field.type === 'checkbox') { %>
 	<input id="<%= field.id %>Input" type="checkbox" class="hidden">
-	<div class="checkbox" change="cms">|||</div>
+	<div class="checkbox">|||</div>
 	<% } else if (field.type === 'radio') { %>
 	<div class="radioOptions">
 		<% if (!field.required) { %>

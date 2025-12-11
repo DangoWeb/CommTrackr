@@ -125,6 +125,7 @@ commtrackr.init({ // Initialize CommTracker with configurations
       // Action metadata can be accessed via data.updatedAt, data.updatedBy, and data.sendEmail
       // Updated metadata can be accessed via data.user, data.amount, data.currency, data.date, data.status, data.locked, and data.assignedTo
       // Updated fields can be accessed via data.fields
+      // Updated tasks can be accessed via data.tasks
     },
     sync: (req) => {
       // Custom handler function for syncing user's commissions

@@ -15,6 +15,7 @@ document.getElementById('create')?.addEventListener('click', create);
 document.getElementById('sync')?.addEventListener('click', sync);
 document.getElementById('save')?.addEventListener('click', save);
 document.querySelector('.fixed5')?.addEventListener('click', clearChanges);
+document.getElementById('addTask')?.addEventListener('click', addTask);
 
 function anim_in() {
     document.querySelector('main').classList.remove('out');
@@ -61,6 +62,24 @@ window.onload = function () {
                     select.value = pathStorage[field.id];
                 };
             });
+        });
+        document.querySelectorAll('.checkbox[change]').forEach(checkbox => {
+            const input = checkbox.parentElement.querySelector('input');
+            if ((pathStorage[input.id] === true) || (pathStorage[input.id] === 'true')) {
+                checkbox.classList.add('checked');
+                input.checked = true;
+            };
+        });
+        Object.keys(pathStorage).forEach(key => {
+            if (key.startsWith('task') && key.endsWith('Input') && !document.getElementById(key) && pathStorage[key]) addTask(null, pathStorage[key]);
+        });
+        Object.keys(pathStorage).forEach(key => {
+            if (key.startsWith('task') && key.endsWith('Done') && document.getElementById(key) && ((pathStorage[key] === true) || (pathStorage[key] === 'true'))) {
+                const checkbox = document.querySelector(`.checkbox[change="${key}"]`);
+                checkbox.classList.add('checked');
+                const input = document.getElementById(key);
+                input.checked = true;
+            };
         });
         document.querySelector('.fixed3').classList.add('visible');
         setTimeout(() => {
@@ -200,16 +219,18 @@ function back() {
     };
 };
 
-function saveChange(path, key, value) {
+function saveChange(path, key, value, noAnimate = false) {
     var pathChanges = JSON.parse(localStorage.getItem(path) || '{}');
     pathChanges[key] = value;
     localStorage.setItem(path, JSON.stringify(pathChanges));
-    console.log(key, value, path, pathChanges);
-    document.querySelector('.fixed5').classList.remove('visible');
-    document.querySelector('.fixed2').classList.add('visible');
-    setTimeout(() => {
-        document.querySelector('.fixed2').classList.remove('visible');
-    }, 2000);
+    if (!noAnimate) {
+        document.querySelector('.fixed5').classList.remove('visible');
+        document.querySelector('.fixed3').classList.remove('visible');
+        document.querySelector('.fixed2').classList.add('visible');
+        setTimeout(() => {
+            document.querySelector('.fixed2').classList.remove('visible');
+        }, 2000);
+    };
 };
 
 document.querySelectorAll('.inputField').forEach(field => {
@@ -240,7 +261,7 @@ document.querySelectorAll('.inputField').forEach(field => {
     });
     field.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', function () {
-            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), field.id, select.multiple ? Array.from(select.selectedOptions).map(selectedOption => selectedOption.value): select.selectedOptions[0].value), 100);
+            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), field.id, select.multiple ? Array.from(select.selectedOptions).map(selectedOption => selectedOption.value) : select.selectedOptions[0].value), 100);
         });
     });
 });
@@ -347,7 +368,6 @@ async function save() {
         if (input) {
             if (input.type === 'checkbox') {
                 data[field.id] = input.checked;
-                console.log(field.id, input.checked)
             } else if (input.type === 'radio') {
                 const radios = field.querySelectorAll('input[type="radio"]');
                 radios.forEach(radio => {
@@ -358,6 +378,17 @@ async function save() {
             };
         };
     });
+    var tasks = [];
+    document.querySelectorAll('table tbody tr').forEach(row => {
+        const checkbox = row.querySelector('.checkbox[change]');
+        const input = row.querySelector('input[type="checkbox"]');
+        const text = row.querySelector('td');
+        if (checkbox && input && text && text.innerText && text.innerText.trim()) tasks.push({
+            done: input.checked,
+            content: text.innerText.trim(),
+        });
+    });
+    data.tasks = tasks;
     await fetch(`${appPath}/${commissionId}/edit`, {
         method: 'POST',
         headers: {
@@ -403,3 +434,44 @@ function clearChanges() {
     document.querySelector('.fixed5').classList.remove('visible');
     window.location.reload();
 };
+
+function addTask(event = null, taskText) {
+    var taskText = taskText || prompt('Add Task:');
+    if (!taskText || !taskText.trim()) return;
+    var newTask = document.createElement('tr');
+    newTask.innerHTML += `<th class="checkbox" change="task${document.querySelector('table tbody').children.length - 2}Done"><input id="task${document.querySelector('table tbody').children.length - 2}Done" type="checkbox" class="hidden">|||</th><td id="task${document.querySelector('table tbody').children.length - 2}Input">${taskText}</td>`;
+    const checkbox = newTask.querySelector('.checkbox[change]');
+    const input = newTask.querySelector('input[type="checkbox"]');
+    const text = newTask.querySelector('td');
+    checkbox.addEventListener('click', function () {
+        checkbox.classList.toggle('checked');
+        input.checked = !input.checked;
+        setTimeout(() => saveChange(window.location.href.replace(appPath, ''), checkbox.getAttribute('change'), input.checked), 100);
+    });
+    text.addEventListener('click', function () {
+        var editText = prompt(`Edit Task: ${text.innerText}`, text.innerText);
+        if (editText !== null) {
+            text.innerText = editText;
+            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), text.id, text.innerText), 100);
+        };
+    });
+    document.querySelector('table tbody').insertBefore(newTask, document.querySelector('table tbody').lastElementChild);
+    setTimeout(() => saveChange(window.location.href.replace(appPath, ''), text.id, taskText, true), 100);
+};
+
+document.querySelectorAll('.checkbox[change]').forEach(checkbox => {
+    const input = checkbox.parentElement.querySelector('input[type="checkbox"]');
+    const text = checkbox.parentElement.querySelector('td');
+    checkbox.addEventListener('click', function () {
+        checkbox.classList.toggle('checked');
+        input.checked = !input.checked;
+        setTimeout(() => saveChange(window.location.href.replace(appPath, ''), checkbox.getAttribute('change'), input.checked), 100);
+    });
+    text.addEventListener('click', function () {
+        var editText = prompt(`Edit Task: ${text.innerText}`, text.innerText);
+        if (editText !== null) {
+            text.innerText = editText;
+            setTimeout(() => saveChange(window.location.href.replace(appPath, ''), text.id, text.innerText), 100);
+        };
+    });
+});

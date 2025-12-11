@@ -310,7 +310,12 @@ app.post('/:id/edit', async (req, res) => {
   });
   if (updateHandler && typeof updateHandler === 'function') {
     try {
-      await updateHandler(req, { ...commission, ...update, fields: data });
+      await updateHandler(req, { ...commission, ...update, fields: data, tasks: Array.isArray(req.body.tasks) ? req.body.tasks.map(task => {
+        return {
+          done: task.done || false,
+          content: task.content ? String(task.content) : ''
+        }
+      }) : commission.tasks });
       await syncHandler(req);
     } catch (error) {
       console.error('Error in handler function:', error);
