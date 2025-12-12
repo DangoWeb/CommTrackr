@@ -45,14 +45,19 @@ describe('CommTrackr Backend Initialization', () => {
                     admin: [2]
                 },
             },
-            fields: ['text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select'].flatMap(fieldType => [
+            fields: ['text', 'number', 'date', 'textarea', 'checkbox', 'radio', 'select', 'multiselect'].flatMap(fieldType => [
                 {
                     id: `test-${fieldType}`,
                     type: fieldType,
                     label: fieldType,
                     description: 'description',
                     placeholder: 'placeholder',
-                    required: false
+                    required: false,
+                    options: ((fieldType === 'radio') || fieldType.includes('select')) ? [
+                        { label: 'Option 1', value: 'option1' },
+                        { label: 'Option 2', value: 'option2' },
+                        { label: 'Option 3', value: 'option3' }
+                    ] : []
                 },
                 {
                     id: `test-${fieldType}-required`,
@@ -60,7 +65,12 @@ describe('CommTrackr Backend Initialization', () => {
                     label: fieldType,
                     description: 'description',
                     placeholder: 'placeholder',
-                    required: true
+                    required: true,
+                    options: ((fieldType === 'radio') || fieldType.includes('select')) ? [
+                        { label: 'Option 1', value: 'option1' },
+                        { label: 'Option 2', value: 'option2' },
+                        { label: 'Option 3', value: 'option3' }
+                    ] : []
                 }
             ]),
             handlers: {
