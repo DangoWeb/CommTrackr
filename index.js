@@ -40,7 +40,7 @@ const customText = {
   adminDescription: 'Manage commissions created on your platform.',
   devTitle: 'Commission Management',
   devDescription: 'Manage commissions assigned to you.',
-  userTitle: '',
+  userTitle: 'Commissions',
   userDescription: 'View and manage your past commissions.',
   newCommissionTitle: 'New Commission',
   newTaskLabel: 'New Task',

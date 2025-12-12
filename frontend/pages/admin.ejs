@@ -7,7 +7,7 @@
 	<div id="sync" class="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23" fill="none">
 			<path d="M18.5949 5.16663C16.8618 3.32009 14.3989 2.16663 11.6666 2.16663C6.41992 2.16663 2.16663 6.41992 2.16663 11.6666C2.16663 16.9133 6.41992 21.1666 11.6666 21.1666C14.3989 21.1666 16.8618 20.0132 18.5949 18.1666M17.3236 7.98035L20.9804 7.98035L20.9804 4.3235" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
 		</svg> Sync</div>
-	<a class="button" href="<%= tenant.domain %>"><%= tenant.customText && tenant.customText.backToLabel ? tenant.customText.backToLabel : ('Back to ' + tenant.name) %></a>
+	<a class="button" href="<%= tenant.domain %>"><%= (tenant.customText && tenant.customText.backToLabel ? tenant.customText.backToLabel : 'Back to ') + tenant.name %></a>
 </div>
 <div class="commissions">
 	<% session[vars.commissions].forEach(commission => { %>
