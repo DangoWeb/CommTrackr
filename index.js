@@ -29,6 +29,73 @@ let createHandler = null;
 let updateHandler = null;
 let syncHandler = null;
 
+const customText = {
+  userWelcomeBefore: 'Welcome, ',
+  userWelcomeAfter: '!',
+  activationTitle: 'Activation',
+  sessionTitle: 'Session',
+  tenantTitle: 'Configuration',
+  authTitle: 'Authentication Required',
+  adminTitle: 'Commission Management',
+  adminDescription: 'Manage commissions created on your platform.',
+  devTitle: 'Commission Management',
+  devDescription: 'Manage commissions assigned to you.',
+  userTitle: '',
+  userDescription: 'View and manage your past commissions.',
+  newCommissionTitle: 'New Commission',
+  newTaskLabel: 'New Task',
+  notFoundTitle: 'Not Found',
+  forbiddenTitle: 'Forbidden',
+  errorTitle: 'Error',
+  labelStatus: 'Status',
+  labelOwner: 'Owner',
+  labelAmount: 'Amount',
+  labelDate: 'Date',
+  labelAssignedTo: 'Assigned To',
+  labelCurrency: 'Currency',
+  labelLocked: 'Locked',
+  labelTasks: 'Tasks',
+  labelSendEmail: 'Send Email',
+  labelRequired: 'Required',
+  labelOptional: 'Optional',
+  youLabel: '(you)',
+  noneLabel: 'None',
+  backLabel: 'Back',
+  nextLabel: 'Next',
+  startLabel: 'Start',
+  createLabel: 'Create',
+  returnLabel: 'Return',
+  restartLabel: 'Restart',
+  saveLabel: 'Save',
+  syncLabel: 'Sync',
+  backToLabel: 'Back to ',
+  changesSaved: 'Changes saved',
+  changesRestored: 'Changes restored',
+  clearChanges: 'Clear changes',
+  brandName: 'CommTrackr',
+  createEstimatedTime: 'Estimated time to complete: 2 minutes',
+  commissionNotFound: 'The requested commission was not found.',
+  commissionLocked: 'This commission is locked from user editing.',
+  forbiddenMessage: 'You do not have permission to edit this commission.',
+  resourceNotFound: 'The requested resource was not found.',
+  serviceOffline: 'Service is currently offline.',
+  noSession: 'No session found. Please enable cookies and try again.',
+  userNotAuthenticated: 'User not authenticated. Please log in and try again.',
+  serviceNotConfigured: 'Service is not properly configured. Please contact the administrator.',
+  noFieldsConfigured: 'No fields configured for commission creation. Please contact the administrator.',
+  createSuccess: 'Your commission was created successfully.',
+  syncSuccess: 'Your commissions were synchronized successfully.',
+  updateSuccess: 'Your commission was updated successfully.',
+  commissionNotFoundJson: 'The requested commission was not found.',
+  forbiddenJson: 'You do not have permission to edit this commission.'
+};
+
+
+function txt(key, def) {
+  if (tenant && tenant.customText && Object.prototype.hasOwnProperty.call(tenant.customText, key)) return tenant.customText[key];
+  return (customText[key] !== undefined) ? customText[key] : def;
+};
+
 function init({
   tenant: newTenant = {
     slug: 'commtrackr',
@@ -87,6 +154,7 @@ function init({
     scripts: [],
     ...newTenant
   };
+  tenant.customText = Object.assign({}, customText, (tenant.customText || {}));
   vars = {
     userId: 'username',
     userName: 'name',
@@ -168,16 +236,16 @@ function verifyAgainstSchema(type, data) {
 };
 
 app.get('/', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: 'Activation' });
-  if (!req.session) return res.render('session', { tenant, title: 'Session' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   switch (getUserRole(req.session)) {
     case 'admin':
-      return res.render('admin', { tenant, title: 'Admin View', session: req.session, vars });
+      return res.render('admin', { tenant, title: txt('adminTitle'), session: req.session, vars });
     case 'dev':
-      return res.render('dev', { tenant, title: 'Developer View', session: req.session, vars });
+      return res.render('dev', { tenant, title: txt('devTitle'), session: req.session, vars });
     default:
       req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
       return res.render('user', { tenant, title: '', session: req.session, vars, fields });
@@ -185,12 +253,12 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/create', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: 'Activation' });
-  if (!req.session) return res.render('session', { tenant, title: 'Session' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
   return res.render('create', {
-    tenant, title: 'New Commission', session: req.session, vars, fields: (getUserRole(req.session) === 'admin') ? [{
+    tenant, title: txt('newCommissionTitle'), session: req.session, vars, fields: (getUserRole(req.session) === 'admin') ? [{
       id: 'user',
       label: 'User ID',
       description: 'The identifier of the user for whom this commission is created for, if any.',
@@ -207,11 +275,11 @@ app.get('/create', async (req, res) => {
 });
 
 app.post('/create', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: 'Service is currently offline.' });
-  if (!req.session) return res.status(401).json({ status: 'error', message: 'No session found. Please enable cookies and try again.' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: 'User not authenticated. Please log in and try again.' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
-  if (!fields || !fields.length) return res.status(500).json({ status: 'error', message: 'No fields configured for commission creation. Please contact the administrator.' });
+  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
+  if (!fields || !fields.length) return res.status(500).json({ status: 'error', message: txt('noFieldsConfigured') });
   const data = {};
   fields.forEach(field => {
     if (field.id) data[field.id] = req.body[field.id] || null;
@@ -234,14 +302,14 @@ app.post('/create', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  return res.status(200).json({ status: 'success', message: 'Your commission was created successfully.' });
+  return res.status(200).json({ status: 'success', message: txt('createSuccess') });
 });
 
 app.put('/sync', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: 'Service is currently offline.' });
-  if (!req.session) return res.status(401).json({ status: 'error', message: 'No session found. Please enable cookies and try again.' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: 'User not authenticated. Please log in and try again.' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
+  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
   if (syncHandler && typeof syncHandler === 'function') {
     try {
       await syncHandler(req);
@@ -262,36 +330,36 @@ app.get('/:id', async (req, res) => {
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
-  if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
+  if (!commission) return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('commissionNotFound') });
   return res.render('commission', { tenant, title: `Commission ${commission.id}`, session: req.session, vars, fields, role: getUserRole(req.session), commission });
 });
 
 app.get('/:id/edit', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: 'Activation' });
-  if (!req.session) return res.render('session', { tenant, title: 'Session' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: 'Configuration' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: 'Authenticate' });
+  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
-  if (!commission) return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested commission was not found.' });
-  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: 'Forbidden', message: 'You do not have permission to edit this commission.' });
+  if (!commission) return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('commissionNotFound') });
+  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: txt('forbiddenTitle'), message: txt('forbiddenMessage') });
   return res.render('edit', { tenant, title: `Edit Commission ${commission.id}`, session: req.session, vars, fields, commission, role: getUserRole(req.session), getUserRole });
 });
 
 app.post('/:id/edit', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: 'Service is currently offline.' });
-  if (!req.session) return res.status(401).json({ status: 'error', message: 'No session found. Please enable cookies and try again.' });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: 'User not authenticated. Please log in and try again.' });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: 'Service is not properly configured. Please contact the administrator.' });
+  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => String(commission.id) === String(req.params.id));
-  if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: 'The requested commission was not found.' });
+  if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: txt('commissionNotFoundJson') });
   const commission = req.session[vars.commissions][commissionIndex];
-  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: 'You do not have permission to edit this commission.' });
+  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: txt('forbiddenJson') });
   const data = {};
   fields.forEach(field => {
     if (field.id) data[field.id] = req.body[field.id] || null;
@@ -330,11 +398,11 @@ app.post('/:id/edit', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  return res.status(200).json({ status: 'success', message: 'Your commission was updated successfully.' });
+  return res.status(200).json({ status: 'success', message: txt('updateSuccess') });
 });
 
 app.use((req, res) => {
-  return res.status(404).render('error', { tenant, title: 'Not Found', message: 'The requested resource was not found.' });
+  return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('resourceNotFound') });
 });
 
 module.exports = {

@@ -5,7 +5,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><%= title %><%= title.length ? ' - ' : '' %><%= tenant.metaTitle %></title>
+	<title><%= title %><%= title && title.length ? ' - ' : '' %><%= tenant.metaTitle %></title>
 	<meta name="description" content="<%= tenant.description %>">
 	<meta name="keywords" content="commission, commissions">
 	<meta name="author" content="CommTrackr">

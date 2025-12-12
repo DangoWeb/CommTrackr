@@ -1,11 +1,11 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1>New Commission</h1>
-<p>Estimated time to complete: 2 minutes</p>
+<h1><%= tenant.customText && tenant.customText.newCommissionTitle ? tenant.customText.newCommissionTitle : 'New Commission' %></h1>
+<p><%= tenant.customText && tenant.customText.createEstimatedTime ? tenant.customText.createEstimatedTime : 'Estimated time to complete: 2 minutes' %></p>
 <% var step = 1; fields.forEach(field => { %>
 <div class="inputField <%= field.required ? 'required' : '' %>" id="<%= field.id %>" step="<%= step %>">
 	<h3><%= field.label %><%= field.required ? '*' : '' %></h3>
-	<p><%= field.required ? 'Required' : 'Optional' %><%= field.description ? ': ' + field.description : '' %></p>
+	<p><%= field.required ? (tenant.customText && tenant.customText.labelRequired ? tenant.customText.labelRequired : 'Required') : (tenant.customText && tenant.customText.labelOptional ? tenant.customText.labelOptional : 'Optional') %><%= field.description ? ': ' + field.description : '' %></p>
 	<% if (field.type === 'textarea') { %>
 	<textarea id="<%= field.id %>Textarea" placeholder="<%= field.placeholder || '' %>"></textarea>
 	<% } else if (field.type === 'checkbox') { %>
@@ -16,7 +16,7 @@
 		<% if (!field.required) { %>
 		<div class="radioOption">
 			<input type="radio" id="none" name="none" value="">
-			<label for="none">None</label>
+			<label for="none"><%= tenant.customText && tenant.customText.noneLabel ? tenant.customText.noneLabel : 'None' %></label>
 		</div>
 		<% } %>
 		<% (field.options || []).forEach(option => { %>
@@ -29,7 +29,7 @@
 	<% } else if (field.type === 'select') { %>
 	<select id="<%= field.id %>Select">
 		<% if (!field.required) { %>
-		<option value="">None</option>
+	<option value=""><%= tenant.customText && tenant.customText.noneLabel ? tenant.customText.noneLabel : 'None' %></option>
 		<% } %>
 		<% (field.options || []).forEach(option => { %>
 		<option value="<%= option.value %>"><%= option.label %></option>
@@ -50,11 +50,11 @@
 </div>
 <% step++; }) %>
 <div class="buttons">
-	<div id="back" class="button hidden">Back</div>
-	<div id="next" class="button active hidden">Next</div>
-	<div id="start" class="button active">Start</div>
-	<div id="create" class="button active hidden">Create</div>
-	<a id="success" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>">Return</a>
-	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/create">Restart</a>
+	<div id="back" class="button hidden"><%= tenant.customText && tenant.customText.backLabel ? tenant.customText.backLabel : 'Back' %></div>
+	<div id="next" class="button active hidden"><%= tenant.customText && tenant.customText.nextLabel ? tenant.customText.nextLabel : 'Next' %></div>
+	<div id="start" class="button active"><%= tenant.customText && tenant.customText.startLabel ? tenant.customText.startLabel : 'Start' %></div>
+	<div id="create" class="button active hidden"><%= tenant.customText && tenant.customText.createLabel ? tenant.customText.createLabel : 'Create' %></div>
+	<a id="success" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>"><%= tenant.customText && tenant.customText.returnLabel ? tenant.customText.returnLabel : 'Return' %></a>
+	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/create"><%= tenant.customText && tenant.customText.restartLabel ? tenant.customText.restartLabel : 'Restart' %></a>
 </div>
 <%- include('foot.ejs') %>

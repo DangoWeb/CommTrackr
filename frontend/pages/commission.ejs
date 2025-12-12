@@ -1,31 +1,31 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1><%= title %></h1>
-<% if (commission.locked) { %><p>This commission is locked from <%= (role !== 'user') ? 'user' : '' %> editing.</p><% } %>
+<% if (commission.locked) { %><p><%= tenant.customText && tenant.customText.commissionLocked ? tenant.customText.commissionLocked : 'This commission is locked from user editing.' %></p><% } %>
 <table>
 	<tbody>
 		<tr>
-			<th>Status</th>
+			<th><%= tenant.customText && tenant.customText.labelStatus ? tenant.customText.labelStatus : 'Status' %></th>
 			<td><%= commission.status %></td>
 		</tr>
 		<tr>
-			<th>Owner</th>
-			<td><%= commission.user %><%= (commission.user === session[vars.userId]) ? ' (you)' : '' %></td>
+			<th><%= tenant.customText && tenant.customText.labelOwner ? tenant.customText.labelOwner : 'Owner' %></th>
+			<td><%= commission.user %><%= (commission.user === session[vars.userId]) ? (' ' + (tenant.customText && tenant.customText.youLabel ? tenant.customText.youLabel : '(you)')) : '' %></td>
 		</tr>
 		<% if (commission.amount !== null) { %>
 		<tr>
-			<th>Amount</th>
+			<th><%= tenant.customText && tenant.customText.labelAmount ? tenant.customText.labelAmount : 'Amount' %></th>
 			<td><%= commission.amount %> <%= commission.currency %></td>
 		</tr>
 		<% } %>
 		<% if (commission.date !== null) { %>
 		<tr>
-			<th>Date</th>
+			<th><%= tenant.customText && tenant.customText.labelDate ? tenant.customText.labelDate : 'Date' %></th>
 			<td><%= new Date(commission.date).toLocaleString() %></td>
 		</tr>
 		<% } %>
 		<tr>
-			<th>Assigned To</th>
+			<th><%= tenant.customText && tenant.customText.labelAssignedTo ? tenant.customText.labelAssignedTo : 'Assigned To' %></th>
 			<td><%= (commission.assignedTo || []).map(assignedTo => vars.users.find(user => user[vars.userId] === assignedTo) ? (vars.users.find(user => user[vars.userId] === assignedTo)[vars.userName] || vars.users.find(user => user[vars.userId] === assignedTo)[vars.userId]) : null).filter(assignedTo => assignedTo).join(', ') || '-' %></td>
 		</tr>
 	</tbody>

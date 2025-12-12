@@ -4,8 +4,8 @@
 <% if (role === 'admin') { %>
 <% if (!vars.disableFieldEditing.includes('status')) { %>
 <div class="inputField active" id="status">
-	<h3>Status*</h3>
-	<p>Required: Commission status.</p>
+	<h3><%= tenant.customText && tenant.customText.labelStatus ? tenant.customText.labelStatus : 'Status' %>*</h3>
+	<p><%= tenant.customText && tenant.customText.labelStatusDescription ? tenant.customText.labelStatusDescription : 'Required: Commission status.' %></p>
 	<select id="statusSelect">
 		<% vars.possibleStatuses.forEach(option => { %>
 		<option value="<%= option.value %>" <%= (option.value === commission.status) ? 'selected' : '' %>><%= option.label %></option>
@@ -15,8 +15,8 @@
 <% } %>
 <% if (!vars.disableFieldEditing.includes('owner')) { %>
 <div class="inputField active" id="owner">
-	<h3>Owner*</h3>
-	<p>Required: Commission owner.</p>
+	<h3><%= tenant.customText && tenant.customText.labelOwner ? tenant.customText.labelOwner : 'Owner' %>*</h3>
+	<p><%= tenant.customText && tenant.customText.labelOwnerDescription ? tenant.customText.labelOwnerDescription : 'Required: Commission owner.' %></p>
 	<% if ((vars.users || []).filter(user => getUserRole(user) === 'user').length) { %>
 	<select id="ownerSelect">
 		<option value="">None</option>
@@ -31,37 +31,37 @@
 <% } %>
 <% if (!vars.disableFieldEditing.includes('amount')) { %>
 <div class="inputField active" id="amount">
-	<h3>Amount</h3>
-	<p>Optional: Commission amount.</p>
+	<h3><%= tenant.customText && tenant.customText.labelAmount ? tenant.customText.labelAmount : 'Amount' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelAmountDescription ? tenant.customText.labelAmountDescription : 'Optional: Commission amount.' %></p>
 	<input id="amountInput" type="number" step="0.01" placeholder="<%= (commission.amount !== null) ? commission.amount : '' %>" value="<%= (commission.amount !== null) ? commission.amount : '' %>">
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('currency')) { %>
 <div class="inputField active" id="currency">
-	<h3>Currency</h3>
-	<p>Optional: Commission currency.</p>
+	<h3><%= tenant.customText && tenant.customText.labelCurrency ? tenant.customText.labelCurrency : 'Currency' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelCurrencyDescription ? tenant.customText.labelCurrencyDescription : 'Optional: Commission currency.' %></p>
 	<input id="currencyInput" type="text" placeholder="<%= (commission.currency !== null) ? commission.currency : '' %>" value="<%= (commission.currency !== null) ? commission.currency : '' %>">
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('date')) { %>
 <div class="inputField active" id="date">
-	<h3>Date</h3>
-	<p>Optional: Commission creation date.</p>
+	<h3><%= tenant.customText && tenant.customText.labelDate ? tenant.customText.labelDate : 'Date' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelDateDescription ? tenant.customText.labelDateDescription : 'Optional: Commission creation date.' %></p>
 	<input id="dateInput" type="datetime-local" placeholder="<%= (commission.date !== null) ? new Date(commission.date).toISOString().slice(0,16) : '' %>" value="<%= (commission.date !== null) ? new Date(commission.date).toISOString().slice(0,16) : '' %>">
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('locked')) { %>
 <div class="inputField active" id="locked">
-	<h3>Locked</h3>
-	<p>Optional: Whether or not the commission is locked from user editing.</p>
+	<h3><%= tenant.customText && tenant.customText.labelLocked ? tenant.customText.labelLocked : 'Locked' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelLockedDescription ? tenant.customText.labelLockedDescription : 'Optional: Whether or not the commission is locked from user editing.' %></p>
 	<input id="lockedInput" type="checkbox" class="hidden" <%= commission.locked ? 'checked' : '' %>>
 	<div class="checkbox">|||</div>
 </div>
 <% } %>
 <% if (!vars.disableFieldEditing.includes('assignedTo')) { %>
 <div class="inputField active" id="assignedTo">
-	<h3>Assigned To</h3>
-	<p>Optional: The developer to assign this commission to.</p>
+	<h3><%= tenant.customText && tenant.customText.labelAssignedTo ? tenant.customText.labelAssignedTo : 'Assigned To' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelAssignedToDescription ? tenant.customText.labelAssignedToDescription : 'Optional: The developer to assign this commission to.' %></p>
 	<% if ((vars.users || []).filter(user => getUserRole(user) !== 'user').length) { %>
 	<select id="assignedToSelect" multiple>
 		<option value="">None</option>
@@ -120,7 +120,7 @@
 	<tbody>
 		<tr>
 			<th>
-				<h3>Tasks</h3>
+				<h3><%= tenant.customText && tenant.customText.labelTasks ? tenant.customText.labelTasks : 'Tasks' %></h3>
 			</th>
 		</tr>
 		<% commission.tasks.forEach(task => { %>
@@ -131,21 +131,21 @@
 		<% }) %>
 		<tr>
 			<th>
-				<div id="addTask" class="button">New Task</div>
+				<div id="addTask" class="button"><%= tenant.customText && tenant.customText.newTaskLabel ? tenant.customText.newTaskLabel : 'New Task' %></div>
 			</th>
 		</tr>
 	</tbody>
 </table>
 <div class="inputField active" id="sendEmail">
-	<h3>Send Email</h3>
-	<p>Optional: Send an email to the user regarding this update.</p>
+	<h3><%= tenant.customText && tenant.customText.labelSendEmail ? tenant.customText.labelSendEmail : 'Send Email' %></h3>
+	<p><%= tenant.customText && tenant.customText.labelSendEmailDescription ? tenant.customText.labelSendEmailDescription : 'Optional: Send an email to the user regarding this update.' %></p>
 	<input id="sendEmailInput" type="checkbox" class="hidden">
 	<div class="checkbox">|||</div>
 </div>
 <% } %>
 <div class="buttons">
-	<% if (!commission.locked || (role !== 'user')) { %><div id="save" class="button">Save</div><% } %>
-	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit">Restart</a>
+	<% if (!commission.locked || (role !== 'user')) { %><div id="save" class="button"><%= tenant.customText && tenant.customText.saveLabel ? tenant.customText.saveLabel : 'Save' %></div><% } %>
+	<a id="error" class="button active hidden" href="<%= tenant.domain %><%= tenant.path %>/<%= commission.id %>/edit"><%= tenant.customText && tenant.customText.restartLabel ? tenant.customText.restartLabel : 'Restart' %></a>
 </div>
 <script>
 	const commissionId = '<%= commission.id %>';
