@@ -22,6 +22,12 @@
 	<link rel="icon" href="<%= tenant.logo %>" type="image/png">
 	<link rel="apple-touch-icon" href="<%= tenant.logo %>">
 	<link rel="stylesheet" href="<%= tenant.domain %><%= tenant.path %>/styles.css">
+	<style>
+		:root {
+			<% if (tenant.forceDarkMode) { %>color-scheme: only dark !important;<% } %>
+			<% if (tenant.themeColor) { %>--themeColor: <%= tenant.themeColor %>;<% } %>
+		}
+	</style>
 </head>
 <% } %>
 

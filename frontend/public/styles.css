@@ -3,11 +3,15 @@
 	src: url("InstrumentSans.ttf") format("truetype");
 }
 
+:root {
+	color-scheme: light dark;
+}
+
 * {
 	margin: 0;
 	padding: 0;
 	font-family: inherit;
-	color: #ffffff;
+	color: light-dark(#000000, #ffffff);
 }
 
 ::-webkit-scrollbar {
@@ -19,8 +23,8 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background: #161616;
-	color: #ffffff;
+	background: light-dark(#e6e6e6, #161616);
+	color: light-dark(#000000, #ffffff);
 	font-family: "Instrument Sans", sans-serif;
 	padding: 25px;
 }
@@ -46,7 +50,7 @@ p {
 
 code {
 	padding: 2.5px 5px;
-	background: #161616;
+	background: light-dark(#e6e6e6, #161616);
 	border-radius: 5px;
 	margin: 0 2.5px;
 }
@@ -74,14 +78,14 @@ code {
 	text-decoration: none;
 	cursor: pointer;
 	user-select: none;
-    min-width: max-content;
+	min-width: max-content;
 	transition: 0.25s;
 
 	svg {
 		height: 12.5px;
 
 		path {
-			stroke: #ffffff;
+			stroke: light-dark(#000000, #ffffff);
 			stroke-width: 2px;
 		}
 	}
@@ -94,8 +98,8 @@ code {
 .button:hover,
 .button:focus,
 .button.active:not(:hover):not(:focus) {
-	background: #2c2c2c;
-	border-color: #393939;
+	background: light-dark(#d7d7d7, #2c2c2c);
+	border-color: light-dark(#c6c6c6, #393939);
 	text-decoration: none;
 }
 
@@ -112,7 +116,7 @@ select {
 	max-width: 500px;
 	min-height: 45px;
 	background: transparent;
-	border-bottom: 1px solid #ffffff;
+	border-bottom: 1px solid light-dark(#000000, #ffffff);
 	outline: none;
 	border-radius: 1px;
 }
@@ -138,7 +142,7 @@ textarea {
 	width: fit-content;
 	height: fit-content;
 	padding: 5px 10px;
-	border: 1px solid #ffffff;
+	border: 1px solid light-dark(#000000, #ffffff);
 	border-radius: 3px;
 	cursor: pointer;
 	user-select: none;
@@ -146,8 +150,8 @@ textarea {
 }
 
 .checkbox.checked {
-	background: #ffffff;
-	color: #161616;
+	background: light-dark(#000000, #ffffff);
+	color: light-dark(#e6e6e6, #161616);
 }
 
 .checkbox[disabled] {
@@ -158,8 +162,8 @@ select {
 	font-size: 15px;
 
 	option {
-		background: #161616;
-		color: #ffffff;
+		background: light-dark(#e6e6e6, #161616);
+		color: light-dark(#000000, #ffffff);
 	}
 }
 
@@ -168,13 +172,13 @@ input[type="radio"] {
 	min-height: unset;
 	width: 20px;
 	appearance: none;
-	border: 1.5px solid #ffffff;
+	border: 1.5px solid light-dark(#000000, #ffffff);
 	border-radius: 100%;
 	transition: 0.25s;
 }
 
 input[type="radio"]:checked {
-	background: #ffffff;
+	background: light-dark(#000000, #ffffff);
 	transition: 0.25s;
 }
 
@@ -203,7 +207,7 @@ main {
 	gap: 10px;
 	width: -webkit-fill-available;
 	height: calc(100vh - 50px - (2 * (min(100px, 10vh))));
-	background: #111111;
+	background: light-dark(#dddddd, #111111);
 	border-radius: 15px;
 	overflow-y: scroll;
 	position: relative;
@@ -287,7 +291,7 @@ main {
 		left: 0;
 		height: 5px;
 		width: 0%;
-		background: #ffffff;
+		background: var(--themeColor, light-dark(#000000, #ffffff));
 		border-radius: 15px;
 		transition: width 0.25s;
 	}
@@ -373,8 +377,8 @@ main {
 			height: -webkit-fill-available;
 			width: min(80%, 450px);
 			background: transparent;
-			border-top: 1px solid #ffffff;
-			border-bottom: 1px solid #ffffff;
+			border-top: 1px solid light-dark(#000000, #ffffff);
+			border-bottom: 1px solid light-dark(#000000, #ffffff);
 			position: absolute;
 			margin-left: -50px;
 			opacity: 0;
@@ -391,7 +395,7 @@ main {
 	table {
 		display: flex;
 		padding: 12.5px 0;
-		background: #161616;
+		background: light-dark(#e6e6e6, #161616);
 		border-radius: 10px;
 		text-align: left;
 		border-spacing: 20px 4px;

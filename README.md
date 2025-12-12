@@ -48,7 +48,8 @@ commtrackr.init({ // Initialize CommTracker with configurations
     metaTitle: 'CommTrackr', // Name of the tenant for meta title tags
     description: 'Easily plan, manage, and track client commissions.', // Description of the tenant
     logo: 'http://localhost:3000/commtrackr/logo.png', // Tenant logo image
-    themeColor: '#ffffff', // Tenant theme color
+    themeColor: '#ffffff', // Tenant theme color (optional)
+    forceDarkMode: false, // Force dark mode for the tenant (optional)
     banner: 'http://localhost:3000/commtrackr/banner_public.png', // Tenant banner image
     domain: 'http://localhost:3000', // Domain for the tenant, including protocol
     path: '/commtrackr', // Path that CommTracker is mounted on

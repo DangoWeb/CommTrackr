@@ -38,6 +38,7 @@ function init({
     logo: 'http://localhost:3000/logo.png',
     banner: 'http://localhost:3000/banner_public.png',
     themeColor: '#ffffff',
+    forceDarkMode: false,
     domain: 'http://localhost:3000',
     path: '',
     auth: {
@@ -72,6 +73,7 @@ function init({
     logo: 'http://localhost:3000/logo.png',
     banner: 'http://localhost:3000/banner_public.png',
     themeColor: '#ffffff',
+    forceDarkMode: false,
     domain: 'http://localhost:3000',
     path: '',
     auth: {
@@ -310,12 +312,14 @@ app.post('/:id/edit', async (req, res) => {
   });
   if (updateHandler && typeof updateHandler === 'function') {
     try {
-      await updateHandler(req, { ...commission, ...update, fields: data, tasks: Array.isArray(req.body.tasks) ? req.body.tasks.map(task => {
-        return {
-          done: task.done || false,
-          content: task.content ? String(task.content) : ''
-        }
-      }) : commission.tasks });
+      await updateHandler(req, {
+        ...commission, ...update, fields: data, tasks: Array.isArray(req.body.tasks) ? req.body.tasks.map(task => {
+          return {
+            done: task.done || false,
+            content: task.content ? String(task.content) : ''
+          }
+        }) : commission.tasks
+      });
       await syncHandler(req);
     } catch (error) {
       console.error('Error in handler function:', error);
