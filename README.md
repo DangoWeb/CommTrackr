@@ -58,6 +58,8 @@ commtrackr.init({ // Initialize CommTracker with configurations
       provider: '', // Recognizable name of authentication provider
       url: '', // URL to redirect to for authentication
     },
+    stylesheets: [], // Additional stylesheets to include
+    scripts: [], // Additional scripts to include
   },
   vars: {
     userId: 'username', // req.session object variable for unique user identification

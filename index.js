@@ -45,7 +45,9 @@ function init({
       enabled: false,
       provider: '',
       url: ''
-    }
+    },
+    stylesheets: [],
+    scripts: []
   },
   vars: newVars = {
     userId: 'username',
@@ -81,6 +83,8 @@ function init({
       provider: '',
       url: '',
     },
+    stylesheets: [],
+    scripts: [],
     ...newTenant
   };
   vars = {

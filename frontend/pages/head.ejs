@@ -28,6 +28,12 @@
 			<% if (tenant.themeColor) { %>--themeColor: <%= tenant.themeColor %>;<% } %>
 		}
 	</style>
+	<% (tenant.stylesheets || []).forEach(stylesheet => { %>
+	<link rel="stylesheet" href="<%= stylesheet %>">
+	<% }) %>
+	<% (tenant.scripts || []).forEach(script => { %>
+	<script src="<%= script %>" defer></script>
+	<% }) %>
 </head>
 <% } %>
 
