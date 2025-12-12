@@ -1,5 +1,5 @@
 <%- include('head.ejs') %>
 <% if ((typeof tenant !== 'undefined') && tenant && tenant.logo && tenant.name) { %><img src="<%= tenant.logo %>" alt="<%= tenant.name %>"><% } %>
-<% if (typeof title !== 'undefined') { %><h1> <%= title || (tenant.customText && tenant.customText.errorTitle ? tenant.customText.errorTitle : 'Error') %></h1><% } %>
-<% if (typeof message !== 'undefined') { %><p><%= message || (tenant.customText && tenant.customText.errorMessage ? tenant.customText.errorMessage : '') %></p><% } %>
+<% if (typeof title !== 'undefined') { %><h1> <%= title || tenant.customText?.errorTitle %></h1><% } %>
+<% if (typeof message !== 'undefined') { %><p><%= message || tenant.customText?.errorMessage %></p><% } %>
 <%- include('foot.ejs') %>

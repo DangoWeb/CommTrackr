@@ -1,4 +1,4 @@
-const commtrackr = require('./index.js');
+const commtrackr = require('../index.js');
 
 async function createHandler(data) {
     return data;

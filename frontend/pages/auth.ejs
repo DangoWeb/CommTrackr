@@ -1,10 +1,10 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
-<h1><%= tenant.customText && tenant.customText.authTitle ? tenant.customText.authTitle : 'Authentication Required' %></h1>
-<p><%= tenant.customText && tenant.customText.authDescription ? tenant.customText.authDescription : ('You\'ll need to log into your ' + (tenant.auth.provider || tenant.name) + ' account before managing your commissions.') %></p>
+<h1><%= tenant.customText?.authTitle %></h1>
+<p><%= tenant.customText?.authDescription %></p>
 <% if (tenant.auth.url) { %>
 <div class="buttons">
-	<div href="<%= tenant.auth.url %>" class="button"><%= tenant.customText && tenant.customText.authContinueLabel ? tenant.customText.authContinueLabel : 'Continue' %></div>
+	<div href="<%= tenant.auth.url %>" class="button"><%= tenant.customText?.authContinueLabel %></div>
 </div>
 <% } %>
 <%- include('foot.ejs') %>

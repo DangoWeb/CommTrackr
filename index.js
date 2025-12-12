@@ -78,6 +78,10 @@ const customText = {
   commissionLocked: 'This commission is locked from user editing.',
   forbiddenMessage: 'You do not have permission to edit this commission.',
   resourceNotFound: 'The requested resource was not found.',
+  offTitle: 'CommTrackr Disabled',
+  offDescription: 'Enable CommTrackr for your app using <code>commtrackr.on();</code>',
+  tenantMisconfiguredTitle: 'Tenant Misconfigured',
+  tenantMisconfiguredDescription: 'Configure your CommTrackr tenant using <code>commtrackr.init({ tenant: { ... } });</code>',
   serviceOffline: 'Service is currently offline.',
   noSession: 'No session found. Please enable cookies and try again.',
   userNotAuthenticated: 'User not authenticated. Please log in and try again.',
@@ -91,7 +95,7 @@ const customText = {
 };
 
 
-function txt(key, def) {
+function getCustomText(key, def) {
   if (tenant && tenant.customText && Object.prototype.hasOwnProperty.call(tenant.customText, key)) return tenant.customText[key];
   return (customText[key] !== undefined) ? customText[key] : def;
 };
@@ -236,16 +240,16 @@ function verifyAgainstSchema(type, data) {
 };
 
 app.get('/', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
-  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
+  if (!on) return res.render('off', { tenant, title: getCustomText('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: getCustomText('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: getCustomText('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: getCustomText('authTitle') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   switch (getUserRole(req.session)) {
     case 'admin':
-      return res.render('admin', { tenant, title: txt('adminTitle'), session: req.session, vars });
+      return res.render('admin', { tenant, title: getCustomText('adminTitle'), session: req.session, vars });
     case 'dev':
-      return res.render('dev', { tenant, title: txt('devTitle'), session: req.session, vars });
+      return res.render('dev', { tenant, title: getCustomText('devTitle'), session: req.session, vars });
     default:
       req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
       return res.render('user', { tenant, title: '', session: req.session, vars, fields });
@@ -253,12 +257,12 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/create', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
-  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
+  if (!on) return res.render('off', { tenant, title: getCustomText('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: getCustomText('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: getCustomText('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: getCustomText('authTitle') });
   return res.render('create', {
-    tenant, title: txt('newCommissionTitle'), session: req.session, vars, fields: (getUserRole(req.session) === 'admin') ? [{
+    tenant, title: getCustomText('newCommissionTitle'), session: req.session, vars, fields: (getUserRole(req.session) === 'admin') ? [{
       id: 'user',
       label: 'User ID',
       description: 'The identifier of the user for whom this commission is created for, if any.',
@@ -275,15 +279,17 @@ app.get('/create', async (req, res) => {
 });
 
 app.post('/create', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
-  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
-  if (!fields || !fields.length) return res.status(500).json({ status: 'error', message: txt('noFieldsConfigured') });
+  if (!on) return res.status(503).json({ status: 'error', message: getCustomText('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: getCustomText('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: getCustomText('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: getCustomText('serviceNotConfigured') });
+  if (!fields || !fields.length) return res.status(500).json({ status: 'error', message: getCustomText('noFieldsConfigured') });
   const data = {};
-  fields.forEach(field => {
-    if (field.id) data[field.id] = req.body[field.id] || null;
-  });
+  const validateFields = fields.filter(field => field.id);
+  for (const field of validateFields) {
+    if (field.required && ((req.body[field.id] === undefined) || (req.body[field.id] === null) || (req.body[field.id] === ''))) return res.status(400).json({ status: 'error', message: `Field ${field.label} is required.` });
+    data[field.id] = (typeof req.body[field.id] !== 'undefined') ? req.body[field.id] : null;
+  };
   data.createdAt = new Date();
   data.createdBy = (tenant.auth && tenant.auth.enabled) ? (((getUserRole(req.session) === 'admin') && req.body.user) ? {
     id: req.body.user,
@@ -302,14 +308,14 @@ app.post('/create', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  return res.status(200).json({ status: 'success', message: txt('createSuccess') });
+  return res.status(200).json({ status: 'success', message: getCustomText('createSuccess') });
 });
 
 app.put('/sync', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
-  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
+  if (!on) return res.status(503).json({ status: 'error', message: getCustomText('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: getCustomText('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: getCustomText('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: getCustomText('serviceNotConfigured') });
   if (syncHandler && typeof syncHandler === 'function') {
     try {
       await syncHandler(req);
@@ -330,36 +336,36 @@ app.get('/:id', async (req, res) => {
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
-  if (!commission) return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('commissionNotFound') });
+  if (!commission) return res.status(404).render('error', { tenant, title: getCustomText('notFoundTitle'), message: getCustomText('commissionNotFound') });
   return res.render('commission', { tenant, title: `Commission ${commission.id}`, session: req.session, vars, fields, role: getUserRole(req.session), commission });
 });
 
 app.get('/:id/edit', async (req, res) => {
-  if (!on) return res.render('off', { tenant, title: txt('activationTitle') });
-  if (!req.session) return res.render('session', { tenant, title: txt('sessionTitle') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: txt('tenantTitle') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: txt('authTitle') });
+  if (!on) return res.render('off', { tenant, title: getCustomText('activationTitle') });
+  if (!req.session) return res.render('session', { tenant, title: getCustomText('sessionTitle') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.render('tenant', { tenant, title: getCustomText('tenantTitle') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.render('auth', { tenant, title: getCustomText('authTitle') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commission = (req.session[vars.commissions] || []).find(commission => String(commission.id) === String(req.params.id));
-  if (!commission) return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('commissionNotFound') });
-  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: txt('forbiddenTitle'), message: txt('forbiddenMessage') });
+  if (!commission) return res.status(404).render('error', { tenant, title: getCustomText('notFoundTitle'), message: getCustomText('commissionNotFound') });
+  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).render('error', { tenant, title: getCustomText('forbiddenTitle'), message: getCustomText('forbiddenMessage') });
   return res.render('edit', { tenant, title: `Edit Commission ${commission.id}`, session: req.session, vars, fields, commission, role: getUserRole(req.session), getUserRole });
 });
 
 app.post('/:id/edit', async (req, res) => {
-  if (!on) return res.status(503).json({ status: 'error', message: txt('serviceOffline') });
-  if (!req.session) return res.status(401).json({ status: 'error', message: txt('noSession') });
-  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: txt('userNotAuthenticated') });
-  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: txt('serviceNotConfigured') });
+  if (!on) return res.status(503).json({ status: 'error', message: getCustomText('serviceOffline') });
+  if (!req.session) return res.status(401).json({ status: 'error', message: getCustomText('noSession') });
+  if (tenant.auth && tenant.auth.enabled && vars.userId && !req.session[vars.userId]) return res.status(401).json({ status: 'error', message: getCustomText('userNotAuthenticated') });
+  if (!tenant.slug || !tenant.name || !tenant.domain) return res.status(500).json({ status: 'error', message: getCustomText('serviceNotConfigured') });
   req.session[vars.commissions] = verifyAgainstSchema('commission', req.session[vars.commissions] || []);
   if (getUserRole(req.session) === 'user') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => commission.user === req.session[vars.userId]);
   if (getUserRole(req.session) === 'dev') req.session[vars.commissions] = req.session[vars.commissions].filter(commission => (commission.assignedTo || []).includes(req.session[vars.userId]));
   const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => String(commission.id) === String(req.params.id));
-  if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: txt('commissionNotFoundJson') });
+  if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: getCustomText('commissionNotFoundJson') });
   const commission = req.session[vars.commissions][commissionIndex];
-  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: txt('forbiddenJson') });
+  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: getCustomText('forbiddenJson') });
   const data = {};
   fields.forEach(field => {
     if (field.id) data[field.id] = req.body[field.id] || null;
@@ -398,11 +404,11 @@ app.post('/:id/edit', async (req, res) => {
       return res.status(500).json({ status: 'error', message: 'An error occurred while processing your request. Please try again later.' });
     };
   };
-  return res.status(200).json({ status: 'success', message: txt('updateSuccess') });
+  return res.status(200).json({ status: 'success', message: getCustomText('updateSuccess') });
 });
 
 app.use((req, res) => {
-  return res.status(404).render('error', { tenant, title: txt('notFoundTitle'), message: txt('resourceNotFound') });
+  return res.status(404).render('error', { tenant, title: getCustomText('notFoundTitle'), message: getCustomText('resourceNotFound') });
 });
 
 module.exports = {
