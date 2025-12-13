@@ -49,6 +49,7 @@ const customText = {
   newTaskLabel: 'New Task',
   notFoundTitle: 'Not Found',
   forbiddenTitle: 'Forbidden',
+  forbiddenMessage: 'You do not have permission to edit this commission.',
   errorTitle: 'Error',
   errorMessage: 'An unexpected error occurred. Please try again later.',
   labelStatus: 'Status',
@@ -89,7 +90,6 @@ const customText = {
   createEstimatedTime: 'Estimated time to complete: 2 minutes',
   commissionNotFound: 'The requested commission was not found.',
   commissionLocked: 'This commission is locked from user editing.',
-  forbiddenMessage: 'You do not have permission to edit this commission.',
   resourceNotFound: 'The requested resource was not found.',
   offTitle: 'CommTrackr Disabled',
   offDescription: 'Enable CommTrackr for your app using <code>commtrackr.on();</code>',
@@ -103,8 +103,7 @@ const customText = {
   createSuccess: 'Your commission was created successfully.',
   syncSuccess: 'Your commissions were synchronized successfully.',
   updateSuccess: 'Your commission was updated successfully.',
-  commissionNotFoundJson: 'The requested commission was not found.',
-  forbiddenMessage: 'You do not have permission to edit this commission.'
+  commissionNotFoundJson: 'The requested commission was not found.'
 };
 
 
