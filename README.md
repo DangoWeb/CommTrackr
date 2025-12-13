@@ -18,7 +18,6 @@ Include the `commtrackr` package in your Express.js application:
 
 ```javascript
 const express = require('express');
-
 const session = require("express-session");
 const MySQLStore = require('express-mysql-session')(session); // Use a MySQL session store
 const sessionStore = new MySQLStore({
@@ -362,3 +361,7 @@ The tenant `customText` configuration allows you to override default text string
   "commissionNotFoundJson": "The requested commission was not found."
 }
 ```
+
+## Extended Documentation
+
+For more detailed documentation, including advanced configuration options and examples, please visit the [CommTrackr Documentation](https://commtrackr.dangoweb.com/).
