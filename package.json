@@ -1,6 +1,6 @@
 {
 	"name": "commtrackr",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Easily plan, manage, and track client commissions.",
 	"main": "index.js",
 	"files": [
