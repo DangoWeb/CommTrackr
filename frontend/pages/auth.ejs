@@ -1,7 +1,7 @@
 <%- include('head.ejs') %>
 <img src="<%= tenant.logo %>" alt="<%= tenant.name %>">
 <h1><%= tenant.customText?.authTitle %></h1>
-<p><%= tenant.customText?.authDescription %></p>
+<p><%= tenant.customText?.authDescriptionBefore + (tenant.auth.provider || tenant.name) + tenant.customText?.authDescriptionAfter %></p>
 <% if (tenant.auth.url) { %>
 <div class="buttons">
 	<div href="<%= tenant.auth.url %>" class="button"><%= tenant.customText?.authContinueLabel %></div>

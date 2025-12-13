@@ -36,6 +36,9 @@ const customText = {
   sessionTitle: 'Session',
   tenantTitle: 'Configuration',
   authTitle: 'Authentication Required',
+  authDescriptionBefore: 'You\'ll need to log into your ',
+  authDescriptionAfter: ' account before managing your commissions.',
+  authContinueLabel: 'Continue',
   adminTitle: 'Commission Management',
   adminDescription: 'Manage commissions created on your platform.',
   devTitle: 'Commission Management',
@@ -47,20 +50,30 @@ const customText = {
   notFoundTitle: 'Not Found',
   forbiddenTitle: 'Forbidden',
   errorTitle: 'Error',
+  errorMessage: 'An unexpected error occurred. Please try again later.',
   labelStatus: 'Status',
+  labelStatusDescription: 'Required: Commission status.',
   labelOwner: 'Owner',
+  labelOwnerDescription: 'Required: Commission owner.',
   labelAmount: 'Amount',
+  labelAmountDescription: 'Optional: Commission amount.',
   labelDate: 'Date',
+  labelDateDescription: 'Optional: Commission creation date.',
   labelAssignedTo: 'Assigned To',
+  labelAssignedToDescription: 'Optional: The developer to assign this commission to.',
   labelCurrency: 'Currency',
+  labelCurrencyDescription: 'Optional: Commission currency.',
   labelLocked: 'Locked',
+  labelLockedDescription: 'Optional: Whether or not the commission is locked from user editing.',
   labelTasks: 'Tasks',
   labelSendEmail: 'Send Email',
+  labelSendEmailDescription: 'Optional: Send an email to the user regarding this update.',
   labelRequired: 'Required',
   labelOptional: 'Optional',
   youLabel: '(you)',
   noneLabel: 'None',
   backLabel: 'Back',
+  backLabelWithArrow: '← Back',
   nextLabel: 'Next',
   startLabel: 'Start',
   createLabel: 'Create',
@@ -91,7 +104,7 @@ const customText = {
   syncSuccess: 'Your commissions were synchronized successfully.',
   updateSuccess: 'Your commission was updated successfully.',
   commissionNotFoundJson: 'The requested commission was not found.',
-  forbiddenJson: 'You do not have permission to edit this commission.'
+  forbiddenMessage: 'You do not have permission to edit this commission.'
 };
 
 
@@ -365,7 +378,7 @@ app.post('/:id/edit', async (req, res) => {
   const commissionIndex = (req.session[vars.commissions] || []).findIndex(commission => String(commission.id) === String(req.params.id));
   if (commissionIndex === -1) return res.status(404).json({ status: 'error', message: getCustomText('commissionNotFoundJson') });
   const commission = req.session[vars.commissions][commissionIndex];
-  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: getCustomText('forbiddenJson') });
+  if (commission.locked && (getUserRole(req.session) === 'user')) return res.status(403).json({ status: 'error', message: getCustomText('forbiddenMessage') });
   const data = {};
   fields.forEach(field => {
     if (field.id) data[field.id] = req.body[field.id] || null;
