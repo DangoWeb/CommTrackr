@@ -475,13 +475,58 @@ main.in .inner {
 }
 
 @media screen and (max-width: 950px) {
+	body {
+		padding: 0;
+	}
+
 	.buttons,
 	.button {
 		width: -webkit-fill-available;
+		min-width: unset;
+		text-align: center;
 	}
 
 	.buttons {
 		flex-direction: column;
 		gap: 10px;
+	}
+
+	main {
+		padding-top: min(50px, 5vh);
+		border-radius: 0;
+		height: calc(100vh - (min(50px, 5vh)) - (min(100px, 10vh)));
+
+		.commissions {
+			gap: 15px;
+
+			.commission {
+				flex-wrap: wrap;
+
+				p:last-of-type {
+					margin-right: 0;
+					margin-left: auto;
+				}
+
+				.button {
+					width: -webkit-fill-available;
+				}
+			}
+		}
+
+		table {
+			padding: 15px !important;
+
+			tbody {
+				display: flex;
+				flex-direction: column;
+				gap: 7.5px;
+			}
+
+			tr {
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+			}
+		}
 	}
 }
