@@ -59,7 +59,13 @@ window.onload = function () {
             });
             field.querySelectorAll('select').forEach(select => {
                 if (pathStorage[field.id]) {
-                    select.value = pathStorage[field.id];
+                    if (Array.isArray(pathStorage[field.id]) && select.multiple) {
+                        Array.from(select.options).forEach(option => {
+                            option.selected = pathStorage[field.id].includes(option.value);
+                        });
+                    } else {
+                        select.value = pathStorage[field.id];
+                    };
                 };
             });
         });
@@ -103,6 +109,10 @@ window.onload = function () {
                             if (radio.value === restore[key]) {
                                 radio.checked = true;
                             };
+                        });
+                    } else if ((input.tagName.toLowerCase() === 'select') && input.multiple && Array.isArray(restore[key])) {
+                        Array.from(input.options).forEach(option => {
+                            option.selected = restore[key].includes(option.value);
                         });
                     } else {
                         input.value = restore[key];
@@ -294,6 +304,8 @@ async function create() {
                 radios.forEach(radio => {
                     if (radio.checked) data[field.id] = radio.value;
                 });
+            } else if ((input.tagName.toLowerCase() === 'select') && input.multiple) {
+                data[field.id] = Array.from(input.selectedOptions).map(option => option.value);
             } else {
                 data[field.id] = input.value;
             };
@@ -373,6 +385,8 @@ async function save() {
                 radios.forEach(radio => {
                     if (radio.checked) data[field.id] = radio.value;
                 });
+            } else if ((input.tagName.toLowerCase() === 'select') && input.multiple) {
+                data[field.id] = Array.from(input.selectedOptions).map(option => option.value);
             } else {
                 data[field.id] = input.value;
             };

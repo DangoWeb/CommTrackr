@@ -288,7 +288,7 @@ The tenant `customText` configuration allows you to override default text string
   "userWelcomeBefore": "Welcome, ",
   "userWelcomeAfter": "!",
   "activationTitle": "Activation",
-  "sessionTitle": "Session",
+  "sessionTitle": "Enable Cookies",
   "tenantTitle": "Configuration",
   "authTitle": "Authentication Required",
   "authDescriptionBefore": "You'll need to log into your ",

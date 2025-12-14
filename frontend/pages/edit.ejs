@@ -136,12 +136,14 @@
 		</tr>
 	</tbody>
 </table>
+<% if (!vars.disableFieldEditing.includes('sendEmail')) { %>
 <div class="inputField active" id="sendEmail">
 	<h3><%= tenant.customText?.labelSendEmail %></h3>
 	<p><%= tenant.customText?.labelSendEmailDescription %></p>
 	<input id="sendEmailInput" type="checkbox" class="hidden">
 	<div class="checkbox">|||</div>
 </div>
+<% } %>
 <% } %>
 <div class="buttons">
 	<% if (!commission.locked || (role !== 'user')) { %><div id="save" class="button"><%= tenant.customText?.saveLabel %></div><% } %>

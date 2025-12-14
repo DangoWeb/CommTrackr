@@ -33,7 +33,7 @@ const customText = {
   userWelcomeBefore: 'Welcome, ',
   userWelcomeAfter: '!',
   activationTitle: 'Activation',
-  sessionTitle: 'Session',
+  sessionTitle: 'Enable Cookies',
   tenantTitle: 'Configuration',
   authTitle: 'Authentication Required',
   authDescriptionBefore: 'You\'ll need to log into your ',
@@ -105,7 +105,6 @@ const customText = {
   updateSuccess: 'Your commission was updated successfully.',
   commissionNotFoundJson: 'The requested commission was not found.'
 };
-
 
 function getCustomText(key, def) {
   if (tenant && tenant.customText && Object.prototype.hasOwnProperty.call(tenant.customText, key)) return tenant.customText[key];
