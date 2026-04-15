@@ -125,7 +125,7 @@
 		</tr>
 		<% commission.tasks.forEach(task => { %>
 		<tr>
-			<th class="checkbox <%= task.done ? 'checked' : '' %>" change="task<%= commission.tasks.indexOf(task) %>Done"><input id="task<%= commission.tasks.indexOf(task) %>Done" type="checkbox" class="hidden">|||</th>
+			<th class="checkbox <%= task.done ? 'checked' : '' %>" change="task<%= commission.tasks.indexOf(task) %>Done"><input id="task<%= commission.tasks.indexOf(task) %>Done" type="checkbox" class="hidden" <%= task.done ? 'checked' : '' %>>|||</th>
 			<td id="task<%= commission.tasks.indexOf(task) %>Input"><%= task.content %></td>
 		</tr>
 		<% }) %>
